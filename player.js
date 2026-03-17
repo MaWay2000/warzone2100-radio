@@ -30,6 +30,10 @@ function clampNumber(value, min, max) {
   return Math.max(min, Math.min(max, value));
 }
 
+function hasPlayerMethod(methodName) {
+  return !!player && typeof player[methodName] === "function";
+}
+
 function readStoredVolume() {
   try {
     const stored = parseInt(localStorage.getItem(VOLUME_STORAGE_KEY), 10);
@@ -94,7 +98,7 @@ function setVol(nextValue) {
   vol.value = String(value);
   syncEq(value);
   writeStoredVolume(value);
-  if (player) {
+  if (hasPlayerMethod("setVolume")) {
     player.setVolume(value);
   }
 }
@@ -172,7 +176,7 @@ function unlockAudio() {
   document.removeEventListener("pointerdown", unlockAudio);
   document.removeEventListener("keydown", unlockAudio);
 
-  if (player) {
+  if (hasPlayerMethod("unMute")) {
     try {
       player.unMute();
     } catch (error) {}
@@ -180,7 +184,7 @@ function unlockAudio() {
 }
 
 function playPause() {
-  if (!player) {
+  if (!hasPlayerMethod("playVideo") || !hasPlayerMethod("pauseVideo")) {
     return;
   }
 
@@ -196,7 +200,7 @@ function playPause() {
 }
 
 function nextTrack() {
-  if (!player) {
+  if (!hasPlayerMethod("playVideoAt")) {
     return;
   }
 
@@ -205,7 +209,7 @@ function nextTrack() {
 }
 
 function prevTrack() {
-  if (!player) {
+  if (!hasPlayerMethod("playVideoAt")) {
     return;
   }
 
