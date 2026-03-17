@@ -12,11 +12,17 @@ const cover = document.getElementById("cover");
 const eqGlow = document.getElementById("eqGlow");
 const vol = document.getElementById("vol");
 const tube = document.querySelector(".tube");
+const versionedAsset = window.versionedAsset || ((path) => path);
+const logo = document.querySelector(".logo");
 
 const TUBE_PAD = 6;
 const BAR_MIN_WIDTH = 3;
 const BAR_GAP = 3;
 const BAR_PATTERN = [34, 42, 38, 52, 46, 64, 76, 66, 54, 46, 40, 38];
+
+if (logo && logo.dataset.assetPath) {
+  logo.src = versionedAsset(logo.dataset.assetPath);
+}
 
 function clampNumber(value, min, max) {
   return Math.max(min, Math.min(max, value));

@@ -4,14 +4,24 @@
 <meta charset="UTF-8">
 <title>Warzone Radio</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="styles.css?v=20260317-refactor1">
+<script>
+window.ASSET_VERSION = "20260317-refactor2";
+window.versionedAsset = function(path) {
+  return path + "?v=" + window.ASSET_VERSION;
+};
+
+const stylesheet = document.createElement("link");
+stylesheet.rel = "stylesheet";
+stylesheet.href = window.versionedAsset("styles.css");
+document.head.appendChild(stylesheet);
+</script>
 </head>
 <body>
 
 <div id="playerWrap"><div id="player"></div></div>
 
 <div class="wrap drag-hint" id="radioWrap">
- <img src="assets/warzone-radio-logo.png?v=20260317-refactor1" class="logo" alt="Warzone 2100 Radio logo">
+ <img data-asset-path="assets/warzone-radio-logo.webp" class="logo" alt="Warzone 2100 Radio logo">
  <div class="player">
   <div class="btn" onclick="nextTrack()" title="Next">
    <svg viewBox="0 0 24 24"><polygon points="5,4 15,12 5,20"/><rect x="16" y="4" width="3" height="16"/></svg>
@@ -35,7 +45,11 @@
 </div>
 
 <script src="https://www.youtube.com/iframe_api"></script>
-<script src="player.js?v=20260317-refactor1"></script>
+<script>
+const playerScript = document.createElement("script");
+playerScript.src = window.versionedAsset("player.js");
+document.body.appendChild(playerScript);
+</script>
 
 </body>
 </html>
