@@ -6,6 +6,8 @@ let player;
 let playing = false;
 let order = [];
 let pos = 0;
+let playerInitialized = false;
+let audioUnlocked = false;
 
 const eq = document.getElementById("eq");
 const cover = document.getElementById("cover");
@@ -102,7 +104,12 @@ function shuffle(count) {
   pos = 0;
 }
 
-function onYouTubeIframeAPIReady() {
+function initYouTubePlayer() {
+  if (playerInitialized || !window.YT || !window.YT.Player) {
+    return;
+  }
+
+  playerInitialized = true;
   player = new YT.Player("player", {
     playerVars: {
       listType: "playlist",
@@ -118,6 +125,11 @@ function onYouTubeIframeAPIReady() {
         setVol(vol.value);
         const list = player.getPlaylist();
         shuffle(list.length);
+        if (audioUnlocked) {
+          try {
+            player.unMute();
+          } catch (error) {}
+        }
         player.playVideoAt(order[pos]);
       },
       onStateChange: (event) => {
@@ -139,10 +151,32 @@ function onYouTubeIframeAPIReady() {
   });
 }
 
+window.onYouTubeIframeAPIReady = initYouTubePlayer;
+
+if (window.YT && window.YT.Player) {
+  initYouTubePlayer();
+}
+
 function updateIcon() {
   document.getElementById("pp").innerHTML = playing
     ? '<svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>'
     : '<svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg>';
+}
+
+function unlockAudio() {
+  if (audioUnlocked) {
+    return;
+  }
+
+  audioUnlocked = true;
+  document.removeEventListener("pointerdown", unlockAudio);
+  document.removeEventListener("keydown", unlockAudio);
+
+  if (player) {
+    try {
+      player.unMute();
+    } catch (error) {}
+  }
 }
 
 function playPause() {
@@ -179,16 +213,8 @@ function prevTrack() {
   player.playVideoAt(order[pos]);
 }
 
-document.addEventListener("click", () => {
-  setTimeout(() => {
-    if (player) {
-      try {
-        player.unMute();
-        player.playVideo();
-      } catch (error) {}
-    }
-  }, 1000);
-}, { once: true });
+document.addEventListener("pointerdown", unlockAudio);
+document.addEventListener("keydown", unlockAudio);
 
 (function initDragPosition() {
   const wrap = document.getElementById("radioWrap");
