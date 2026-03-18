@@ -183,11 +183,18 @@ function findEnabledTrackFrom(startIndex, direction) {
 }
 
 function formatTrackTitle(title) {
-  return title
+  const stripped = title
     .replace(/^Warzone 2100 OST\s*-\s*/i, "")
     .replace(/^Warzone 2100\s*-\s*Aftermath Soundtrack\s*-\s*/i, "")
     .replace(/^Track \d+\s*-\s*/i, "")
     .trim();
+
+  const parts = stripped.split(/\s*-\s*/).filter(Boolean);
+  if (parts.length > 1 && /^(Martin Severn|AlexTheDacian)$/i.test(parts[0])) {
+    return parts.slice(1).join(" - ");
+  }
+
+  return stripped;
 }
 
 function updateShuffleUi() {
