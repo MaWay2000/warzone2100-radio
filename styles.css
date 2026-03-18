@@ -85,6 +85,15 @@ body {
   fill: #fff;
 }
 
+.settings-btn {
+  margin-left: 4px;
+}
+
+.settings-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
 .tube {
   position: relative;
   width: 180px;
