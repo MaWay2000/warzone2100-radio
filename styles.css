@@ -150,6 +150,46 @@ body {
   line-height: 1.1;
 }
 
+.settings-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.shuffle-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid rgba(118, 183, 235, 0.24);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(15, 27, 39, 0.92) 0%, rgba(9, 15, 22, 0.98) 100%);
+  color: rgba(214, 241, 255, 0.78);
+  font: inherit;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+.shuffle-toggle:hover {
+  border-color: rgba(126, 216, 255, 0.34);
+  color: #fff;
+}
+
+.shuffle-toggle.is-active {
+  border-color: rgba(129, 233, 255, 0.42);
+  background: linear-gradient(180deg, rgba(37, 87, 116, 0.96) 0%, rgba(10, 44, 63, 0.98) 100%);
+  color: #fff;
+  box-shadow: 0 0 16px rgba(0, 194, 255, 0.16);
+}
+
+.shuffle-toggle svg {
+  width: 13px;
+  height: 13px;
+  fill: currentColor;
+}
+
 .settings-close {
   width: 32px;
   height: 32px;

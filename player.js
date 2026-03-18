@@ -1,7 +1,7 @@
 const DEFAULT_VOLUME = 30;
 const POSITION_STORAGE_KEY = "warzone_radio_position_v1";
 const VOLUME_STORAGE_KEY = "warzone_radio_volume_v1";
-const ACTIVE_PLAYLIST_STORAGE_KEY = "warzone_radio_playlist_v1";
+const SHUFFLE_STORAGE_KEY = "warzone_radio_shuffle_v1";
 const TRACKS = [
   { id: "Py5lzGVtjAo", title: "Warzone 2100 OST -  Main Menu", length: "3:01" },
   { id: "bv9GzLEOZk4", title: "Warzone 2100 OST - Martin Severn - Nuclear Silence", length: "7:01" },
@@ -40,6 +40,9 @@ let playerInitialized = false;
 let audioUnlocked = false;
 let settingsOpen = false;
 let currentTrackIndex = 0;
+let shuffleEnabled = readStoredShuffleState();
+let shuffleOrder = [];
+let shufflePosition = 0;
 
 const eq = document.getElementById("eq");
 const cover = document.getElementById("cover");
@@ -49,6 +52,8 @@ const tube = document.querySelector(".tube");
 const settingsPanel = document.getElementById("settingsPanel");
 const settingsButton = document.getElementById("settingsButton");
 const settingsTitle = document.getElementById("settingsTitle");
+const shuffleToggle = document.getElementById("shuffleToggle");
+const shuffleToggleLabel = document.getElementById("shuffleToggleLabel");
 const playlistList = document.getElementById("playlistList");
 const versionedAsset = window.versionedAsset || ((path) => path);
 const logo = document.querySelector(".logo");
@@ -62,16 +67,25 @@ if (logo && logo.dataset.assetPath) {
   logo.src = versionedAsset(logo.dataset.assetPath);
 }
 
-try {
-  localStorage.removeItem(ACTIVE_PLAYLIST_STORAGE_KEY);
-} catch (error) {}
-
 function clampNumber(value, min, max) {
   return Math.max(min, Math.min(max, value));
 }
 
 function hasPlayerMethod(methodName) {
   return !!player && typeof player[methodName] === "function";
+}
+
+function buildShuffledOrder(anchorIndex) {
+  const allIndexes = [...Array(TRACKS.length).keys()].filter((index) => index !== anchorIndex);
+
+  for (let index = allIndexes.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    const swapValue = allIndexes[index];
+    allIndexes[index] = allIndexes[swapIndex];
+    allIndexes[swapIndex] = swapValue;
+  }
+
+  return [anchorIndex, ...allIndexes];
 }
 
 function readStoredVolume() {
@@ -83,6 +97,20 @@ function readStoredVolume() {
   } catch (error) {}
 
   return DEFAULT_VOLUME;
+}
+
+function readStoredShuffleState() {
+  try {
+    return localStorage.getItem(SHUFFLE_STORAGE_KEY) === "true";
+  } catch (error) {}
+
+  return false;
+}
+
+function writeStoredShuffleState(enabled) {
+  try {
+    localStorage.setItem(SHUFFLE_STORAGE_KEY, String(enabled));
+  } catch (error) {}
 }
 
 function writeStoredVolume(value) {
@@ -97,6 +125,40 @@ function formatTrackTitle(title) {
     .replace(/^Warzone 2100\s*-\s*Aftermath Soundtrack\s*-\s*/i, "")
     .replace(/^Track \d+\s*-\s*/i, "")
     .trim();
+}
+
+function updateShuffleUi() {
+  if (!shuffleToggle || !shuffleToggleLabel) {
+    return;
+  }
+
+  shuffleToggle.classList.toggle("is-active", shuffleEnabled);
+  shuffleToggle.setAttribute("aria-pressed", String(shuffleEnabled));
+  shuffleToggleLabel.textContent = shuffleEnabled ? "Shuffle On" : "Shuffle Off";
+}
+
+function resetShuffleOrder(anchorIndex = currentTrackIndex) {
+  shuffleOrder = buildShuffledOrder(anchorIndex);
+  shufflePosition = 0;
+}
+
+function syncShufflePosition(trackIndex) {
+  if (!shuffleEnabled) {
+    return;
+  }
+
+  if (shuffleOrder.length !== TRACKS.length) {
+    resetShuffleOrder(trackIndex);
+    return;
+  }
+
+  const indexInOrder = shuffleOrder.indexOf(trackIndex);
+  if (indexInOrder === -1) {
+    resetShuffleOrder(trackIndex);
+    return;
+  }
+
+  shufflePosition = indexInOrder;
 }
 
 function syncPlaylistSelection() {
@@ -139,6 +201,7 @@ function renderPlaylist() {
   });
 
   syncPlaylistSelection();
+  updateShuffleUi();
 }
 
 function setSettingsOpen(nextState) {
@@ -219,10 +282,17 @@ function setVol(nextValue) {
   }
 }
 
-function loadTrack(index) {
+function loadTrack(index, options = {}) {
   const trackIndex = clampNumber(index, 0, TRACKS.length - 1);
 
   currentTrackIndex = trackIndex;
+  if (shuffleEnabled) {
+    if (options.resetShuffleOrder) {
+      resetShuffleOrder(trackIndex);
+    } else {
+      syncShufflePosition(trackIndex);
+    }
+  }
 
   if (!hasPlayerMethod("loadVideoById")) {
     return false;
@@ -243,7 +313,21 @@ function loadTrack(index) {
 }
 
 function playTrack(index) {
-  loadTrack(index);
+  loadTrack(index, { resetShuffleOrder: shuffleEnabled });
+}
+
+function toggleShuffleMode() {
+  shuffleEnabled = !shuffleEnabled;
+  writeStoredShuffleState(shuffleEnabled);
+
+  if (shuffleEnabled) {
+    resetShuffleOrder(currentTrackIndex);
+  } else {
+    shuffleOrder = [];
+    shufflePosition = 0;
+  }
+
+  updateShuffleUi();
 }
 
 function initYouTubePlayer() {
@@ -339,12 +423,32 @@ function nextTrack() {
     return;
   }
 
+  if (shuffleEnabled) {
+    if (shuffleOrder.length !== TRACKS.length) {
+      resetShuffleOrder(currentTrackIndex);
+    }
+
+    shufflePosition = (shufflePosition + 1) % shuffleOrder.length;
+    loadTrack(shuffleOrder[shufflePosition]);
+    return;
+  }
+
   const nextIndex = (currentTrackIndex + 1) % TRACKS.length;
   loadTrack(nextIndex);
 }
 
 function prevTrack() {
   if (!TRACKS.length) {
+    return;
+  }
+
+  if (shuffleEnabled) {
+    if (shuffleOrder.length !== TRACKS.length) {
+      resetShuffleOrder(currentTrackIndex);
+    }
+
+    shufflePosition = (shufflePosition - 1 + shuffleOrder.length) % shuffleOrder.length;
+    loadTrack(shuffleOrder[shufflePosition]);
     return;
   }
 
@@ -472,6 +576,7 @@ setInterval(animateBars, 120);
 window.addEventListener("resize", () => syncEq(parseInt(vol.value, 10) || 0));
 window.toggleSettingsPanel = toggleSettingsPanel;
 window.closeSettingsPanel = closeSettingsPanel;
+window.toggleShuffleMode = toggleShuffleMode;
 window.playPause = playPause;
 window.nextTrack = nextTrack;
 window.prevTrack = prevTrack;
