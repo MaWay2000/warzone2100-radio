@@ -721,22 +721,6 @@ function prevTrack() {
 
 document.addEventListener("pointerdown", unlockAudio);
 document.addEventListener("keydown", unlockAudio);
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") {
-    closeSettingsPanel();
-  }
-});
-document.addEventListener("pointerdown", (event) => {
-  if (!settingsOpen) {
-    return;
-  }
-
-  if (event.target.closest("#settingsPanel, #settingsButton")) {
-    return;
-  }
-
-  closeSettingsPanel();
-});
 
 (function initDragPosition() {
   const wrap = document.getElementById("radioWrap");
