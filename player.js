@@ -45,6 +45,25 @@ const PLAYLISTS = [
       { id: "lvXpOsdEwks", title: "Warzone 2100 - Legacy Soundtrack - Track 14 - Artifact Beacon", length: "6:06" },
       { id: "2Bqi1JmAotg", title: "Warzone 2100 - Legacy Soundtrack - Track 15 - Unexpected Outcome", length: "6:13" }
     ]
+  },
+  {
+    key: "aftermath",
+    title: "Warzone 2100 - Aftermath Soundtrack",
+    playlistId: "PL-Qt8zXK51N_2LsxsL7VA4VRoFPAe3v_Z",
+    tracks: [
+      { id: "MEpytWvLP5Q", title: "Warzone 2100 - Aftermath Soundtrack - Menu Theme [Enhanced]", length: "10:49" },
+      { id: "sK0C42Q_MAk", title: "Warzone 2100 - Aftermath Soundtrack - Track 17 - Nuclear Heartbeat", length: "7:58" },
+      { id: "OeKNXc55Iow", title: "Warzone 2100 - Aftermath Soundtrack - Track 18 - Moonlight Tactics", length: "10:22" },
+      { id: "Q9xRuvG-XC4", title: "Warzone 2100 - Aftermath Soundtrack - Track 19 - Undisclosed Location", length: "6:02" },
+      { id: "VG4K1b2FJrE", title: "Warzone 2100 - Aftermath Soundtrack - Track 20 - Shifting Realities", length: "9:46" },
+      { id: "g76gc2GBeME", title: "Warzone 2100 - Aftermath Soundtrack - Track 21 - The Collapse", length: "10:55" },
+      { id: "SF1Cdxw91Vw", title: "Warzone 2100 - Aftermath Soundtrack - Track 22 - Aftershocks", length: "9:49" },
+      { id: "eK9QHcoDjHM", title: "Warzone 2100 - Aftermath Soundtrack - Track 23 - Blast Zone", length: "11:21" },
+      { id: "d6jpvv8TE0U", title: "Warzone 2100 - Aftermath Soundtrack - Track 24 - Reclamation", length: "8:48" },
+      { id: "OYIx649A_bY", title: "Warzone 2100 - Aftermath Soundtrack - Track 25 - Rainout", length: "9:55" },
+      { id: "nb9kl8kVahE", title: "Warzone 2100 - Aftermath Soundtrack - Track 26 - Just Rewards", length: "14:08" },
+      { id: "1JUDSwBRXOU", title: "Warzone 2100 - Aftermath Soundtrack - Track 27 - Launch Codes", length: "6:59" }
+    ]
   }
 ];
 
@@ -148,13 +167,16 @@ function writeStoredVolume(value) {
 }
 
 function formatTrack(item, playlistTitle) {
+  const playlistParts = playlistTitle
+    .split(/\s*-\s*/)
+    .map((part) => part.trim())
+    .filter(Boolean);
   const parts = item.title
     .split(/\s*-\s*/)
     .map((part) => part.trim())
     .filter(Boolean);
   const filtered = parts.filter((part) => {
-    return !/^Warzone 2100(?: OST)?$/i.test(part) &&
-      !/^Legacy Soundtrack$/i.test(part) &&
+    return !playlistParts.some((playlistPart) => playlistPart.toLowerCase() === part.toLowerCase()) &&
       !/^Track \d+$/i.test(part);
   });
 
