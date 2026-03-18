@@ -1,24 +1,51 @@
 const DEFAULT_VOLUME = 30;
 const POSITION_STORAGE_KEY = "warzone_radio_position_v1";
 const VOLUME_STORAGE_KEY = "warzone_radio_volume_v1";
-const PLAYLIST_ITEMS = [
-  { id: "Py5lzGVtjAo", title: "Warzone 2100 OST -  Main Menu", length: "3:01" },
-  { id: "bv9GzLEOZk4", title: "Warzone 2100 OST - Martin Severn - Nuclear Silence", length: "7:01" },
-  { id: "HsgyEmLrNKE", title: "Warzone 2100 OST - Martin Severn - Radar Dish", length: "7:52" },
-  { id: "d5kdmyseI9Q", title: "Warzone 2100 OST - Martin Severn - Enfeebling Emptiness", length: "5:00" },
-  { id: "IA00X8OrmII", title: "Warzone 2100 OST - AlexTheDacian - Uncertain Future", length: "10:59" },
-  { id: "kRyOXti5JrI", title: "Warzone 2100 OST - AlexTheDacian - Recovery Ops", length: "6:59" },
-  { id: "dimG8S09UV8", title: "Warzone 2100 OST - AlexTheDacian - Incoming Transmission", length: "5:13" },
-  { id: "ntjg7_rSUFI", title: "Warzone 2100 OST - AlexTheDacian - My Kind of Wasteland", length: "7:49" },
-  { id: "fapSb205e48", title: "Warzone 2100 OST - AlexTheDacian - Advanced Manufacturing", length: "6:37" },
-  { id: "VVFjtC1v_kI", title: "Warzone 2100 OST - AlexTheDacian - The Project", length: "8:13" },
-  { id: "3JID8x2G0_o", title: "Warzone 2100 OST - AlexTheDacian - The Collective", length: "12:37" },
-  { id: "wyufwpMkzRY", title: "Warzone 2100 OST - AlexTheDacian - Awakend", length: "6:16" },
-  { id: "RR5OTGYxCk8", title: "Warzone 2100 OST - AlexTheDacian - New Dawn", length: "6:32" },
-  { id: "3QutPACeqRg", title: "Warzone 2100 OST - AlexTheDacian - Broken Dreams", length: "7:06" },
-  { id: "yrKdamkYKvk", title: "Warzone 2100 OST - AlexTheDacian - Artifact Beacon", length: "6:06" },
-  { id: "PJ2wav5ERJQ", title: "Warzone 2100 OST  - AlexTheDacian - Unexpected Outcome", length: "6:13" },
-  { id: "USmw4wgv9as", title: "Warzone 2100 OST - AlexTheDacian - Geiger Ghost Extended v2", length: "8:08" }
+const ACTIVE_PLAYLIST_STORAGE_KEY = "warzone_radio_playlist_v1";
+const PLAYLISTS = [
+  {
+    key: "ost",
+    title: "Warzone 2100 OST",
+    playlistId: "PLBjhKnTGZP1Bwc4UL1sTF7j1gUR8bh2y5",
+    tracks: [
+      { id: "Py5lzGVtjAo", title: "Warzone 2100 OST -  Main Menu", length: "3:01" },
+      { id: "bv9GzLEOZk4", title: "Warzone 2100 OST - Martin Severn - Nuclear Silence", length: "7:01" },
+      { id: "HsgyEmLrNKE", title: "Warzone 2100 OST - Martin Severn - Radar Dish", length: "7:52" },
+      { id: "d5kdmyseI9Q", title: "Warzone 2100 OST - Martin Severn - Enfeebling Emptiness", length: "5:00" },
+      { id: "IA00X8OrmII", title: "Warzone 2100 OST - AlexTheDacian - Uncertain Future", length: "10:59" },
+      { id: "kRyOXti5JrI", title: "Warzone 2100 OST - AlexTheDacian - Recovery Ops", length: "6:59" },
+      { id: "dimG8S09UV8", title: "Warzone 2100 OST - AlexTheDacian - Incoming Transmission", length: "5:13" },
+      { id: "ntjg7_rSUFI", title: "Warzone 2100 OST - AlexTheDacian - My Kind of Wasteland", length: "7:49" },
+      { id: "fapSb205e48", title: "Warzone 2100 OST - AlexTheDacian - Advanced Manufacturing", length: "6:37" },
+      { id: "VVFjtC1v_kI", title: "Warzone 2100 OST - AlexTheDacian - The Project", length: "8:13" },
+      { id: "3JID8x2G0_o", title: "Warzone 2100 OST - AlexTheDacian - The Collective", length: "12:37" },
+      { id: "wyufwpMkzRY", title: "Warzone 2100 OST - AlexTheDacian - Awakend", length: "6:16" },
+      { id: "RR5OTGYxCk8", title: "Warzone 2100 OST - AlexTheDacian - New Dawn", length: "6:32" },
+      { id: "3QutPACeqRg", title: "Warzone 2100 OST - AlexTheDacian - Broken Dreams", length: "7:06" },
+      { id: "yrKdamkYKvk", title: "Warzone 2100 OST - AlexTheDacian - Artifact Beacon", length: "6:06" },
+      { id: "PJ2wav5ERJQ", title: "Warzone 2100 OST  - AlexTheDacian - Unexpected Outcome", length: "6:13" },
+      { id: "USmw4wgv9as", title: "Warzone 2100 OST - AlexTheDacian - Geiger Ghost Extended v2", length: "8:08" }
+    ]
+  },
+  {
+    key: "legacy",
+    title: "Warzone 2100 - Legacy Soundtrack",
+    playlistId: "PL-Qt8zXK51N-9dePu7NYvO9B8ffzS5_kz",
+    tracks: [
+      { id: "rV3jD-XpHQk", title: "Warzone 2100 - Legacy Soundtrack - Track 4 - Uncertain Future", length: "10:59" },
+      { id: "bs_fpYuRW2U", title: "Warzone 2100 - Legacy Soundtrack - Track 5 - Recovery Ops", length: "6:59" },
+      { id: "AAmyIgEjGGY", title: "Warzone 2100 - Legacy Soundtrack - Track 6 - Incoming Transmission", length: "5:13" },
+      { id: "qB1TF77rlNs", title: "Warzone 2100 - Legacy Soundtrack - Track 7 - My Kind of Wasteland", length: "7:49" },
+      { id: "OwlhObtvdQM", title: "Warzone 2100 - Legacy Soundtrack - Track 8 - Advanced Manufacturing", length: "6:37" },
+      { id: "neQ43B7RCTM", title: "Warzone 2100 - Legacy Soundtrack - Track 9 - The Project", length: "8:13" },
+      { id: "uw4hHN0hUbk", title: "Warzone 2100 - Legacy Soundtrack - Track 10 - The Collective", length: "12:37" },
+      { id: "PC3AmvtA3bw", title: "Warzone 2100 - Legacy Soundtrack - Track 11 - Awakened", length: "6:16" },
+      { id: "HqTOP8KJnGg", title: "Warzone 2100 - Legacy Soundtrack - Track 12 - New Dawn", length: "6:32" },
+      { id: "7ZnRs3KMlfA", title: "Warzone 2100 - Legacy Soundtrack - Track 13 - Broken Dreams", length: "7:06" },
+      { id: "lvXpOsdEwks", title: "Warzone 2100 - Legacy Soundtrack - Track 14 - Artifact Beacon", length: "6:06" },
+      { id: "2Bqi1JmAotg", title: "Warzone 2100 - Legacy Soundtrack - Track 15 - Unexpected Outcome", length: "6:13" }
+    ]
+  }
 ];
 
 let player;
@@ -28,6 +55,8 @@ let pos = 0;
 let playerInitialized = false;
 let audioUnlocked = false;
 let settingsOpen = false;
+let currentPlaylistKey = readStoredPlaylistKey();
+let loadedPlaylistKey = "";
 
 const eq = document.getElementById("eq");
 const cover = document.getElementById("cover");
@@ -36,6 +65,8 @@ const vol = document.getElementById("vol");
 const tube = document.querySelector(".tube");
 const settingsPanel = document.getElementById("settingsPanel");
 const settingsButton = document.getElementById("settingsButton");
+const settingsTitle = document.getElementById("settingsTitle");
+const playlistTabs = document.getElementById("playlistTabs");
 const playlistList = document.getElementById("playlistList");
 const versionedAsset = window.versionedAsset || ((path) => path);
 const logo = document.querySelector(".logo");
@@ -53,60 +84,157 @@ function clampNumber(value, min, max) {
   return Math.max(min, Math.min(max, value));
 }
 
+function buildShuffledOrder(count) {
+  const nextOrder = [...Array(count).keys()];
+
+  for (let index = nextOrder.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    const swapValue = nextOrder[index];
+    nextOrder[index] = nextOrder[swapIndex];
+    nextOrder[swapIndex] = swapValue;
+  }
+
+  return nextOrder;
+}
+
 function hasPlayerMethod(methodName) {
   return !!player && typeof player[methodName] === "function";
 }
 
-function formatTrack(item) {
-  const cleaned = item.title.replace(/^Warzone 2100 OST\s*-\s*/i, "").trim();
-  const parts = cleaned.split(/\s*-\s*/).filter(Boolean);
+function getPlaylistByKey(key) {
+  return PLAYLISTS.find((playlist) => playlist.key === key) || PLAYLISTS[0];
+}
 
-  if (parts.length === 1) {
-    return { name: parts[0], artist: "Warzone 2100 Radio" };
+function getActivePlaylist() {
+  return getPlaylistByKey(currentPlaylistKey);
+}
+
+function getTrackCount() {
+  return getActivePlaylist().tracks.length;
+}
+
+function readStoredPlaylistKey() {
+  try {
+    const stored = localStorage.getItem(ACTIVE_PLAYLIST_STORAGE_KEY);
+    if (PLAYLISTS.some((playlist) => playlist.key === stored)) {
+      return stored;
+    }
+  } catch (error) {}
+
+  return PLAYLISTS[0].key;
+}
+
+function writeStoredPlaylistKey(key) {
+  try {
+    localStorage.setItem(ACTIVE_PLAYLIST_STORAGE_KEY, key);
+  } catch (error) {}
+}
+
+function readStoredVolume() {
+  try {
+    const stored = parseInt(localStorage.getItem(VOLUME_STORAGE_KEY), 10);
+    if (Number.isFinite(stored)) {
+      return clampNumber(stored, 0, 100);
+    }
+  } catch (error) {}
+
+  return DEFAULT_VOLUME;
+}
+
+function writeStoredVolume(value) {
+  try {
+    localStorage.setItem(VOLUME_STORAGE_KEY, String(value));
+  } catch (error) {}
+}
+
+function formatTrack(item, playlistTitle) {
+  const parts = item.title
+    .split(/\s*-\s*/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+  const filtered = parts.filter((part) => {
+    return !/^Warzone 2100(?: OST)?$/i.test(part) &&
+      !/^Legacy Soundtrack$/i.test(part) &&
+      !/^Track \d+$/i.test(part);
+  });
+
+  if (!filtered.length) {
+    return { name: item.title, artist: playlistTitle };
+  }
+
+  if (filtered.length === 1) {
+    return { name: filtered[0], artist: playlistTitle };
   }
 
   return {
-    artist: parts[0],
-    name: parts.slice(1).join(" - ")
+    artist: filtered[0],
+    name: filtered.slice(1).join(" - ")
   };
 }
 
+function ensureOrderForActivePlaylist() {
+  if (!order.length || order.length !== getTrackCount()) {
+    order = buildShuffledOrder(getTrackCount());
+    pos = 0;
+  }
+}
+
+function setOrderPosition(trackIndex) {
+  ensureOrderForActivePlaylist();
+
+  const shuffledPosition = order.indexOf(trackIndex);
+  pos = shuffledPosition >= 0 ? shuffledPosition : 0;
+}
+
 function getCurrentPlaylistIndex() {
-  if (hasPlayerMethod("getPlaylistIndex")) {
+  if (loadedPlaylistKey === currentPlaylistKey && hasPlayerMethod("getPlaylistIndex")) {
     const currentIndex = player.getPlaylistIndex();
     if (Number.isInteger(currentIndex) && currentIndex >= 0) {
       return currentIndex;
     }
   }
 
-  if (order.length && Number.isInteger(pos) && pos >= 0) {
-    return order[pos % order.length];
+  if (order.length && Number.isInteger(pos) && pos >= 0 && pos < order.length) {
+    return order[pos];
   }
 
   return 0;
 }
 
-function syncPlaylistSelection() {
-  const currentIndex = getCurrentPlaylistIndex();
-  playlistList.querySelectorAll(".playlist-item").forEach((item, index) => {
-    item.classList.toggle("is-active", index === currentIndex);
+function renderPlaylistTabs() {
+  playlistTabs.innerHTML = "";
+
+  PLAYLISTS.forEach((playlist) => {
+    const tab = document.createElement("button");
+
+    tab.type = "button";
+    tab.className = "playlist-tab";
+    tab.dataset.key = playlist.key;
+    tab.textContent = playlist.title;
+    tab.addEventListener("click", () => activatePlaylist(playlist.key));
+
+    playlistTabs.appendChild(tab);
   });
 }
 
 function renderPlaylist() {
+  const activePlaylist = getActivePlaylist();
+
+  settingsTitle.textContent = activePlaylist.title;
   playlistList.innerHTML = "";
 
-  PLAYLIST_ITEMS.forEach((track, index) => {
+  activePlaylist.tracks.forEach((track, index) => {
     const item = document.createElement("button");
     const trackCopy = document.createElement("span");
     const indexLabel = document.createElement("span");
     const name = document.createElement("span");
     const artist = document.createElement("span");
     const length = document.createElement("span");
-    const formatted = formatTrack(track);
+    const formatted = formatTrack(track, activePlaylist.title);
 
     item.type = "button";
     item.className = "playlist-item";
+    item.dataset.index = String(index);
     item.addEventListener("click", () => playTrack(index));
 
     indexLabel.className = "playlist-index";
@@ -131,6 +259,24 @@ function renderPlaylist() {
   syncPlaylistSelection();
 }
 
+function renderSettingsUi() {
+  renderPlaylistTabs();
+  renderPlaylist();
+}
+
+function syncPlaylistSelection() {
+  const currentIndex = getCurrentPlaylistIndex();
+
+  playlistTabs.querySelectorAll(".playlist-tab").forEach((item) => {
+    item.classList.toggle("is-active", item.dataset.key === currentPlaylistKey);
+  });
+
+  playlistList.querySelectorAll(".playlist-item").forEach((item) => {
+    const index = parseInt(item.dataset.index, 10);
+    item.classList.toggle("is-active", index === currentIndex);
+  });
+}
+
 function setSettingsOpen(nextState) {
   settingsOpen = nextState;
   settingsPanel.classList.toggle("is-open", settingsOpen);
@@ -148,36 +294,6 @@ function toggleSettingsPanel() {
 
 function closeSettingsPanel() {
   setSettingsOpen(false);
-}
-
-function playTrack(index) {
-  if (!hasPlayerMethod("playVideoAt")) {
-    return;
-  }
-
-  const trackIndex = clampNumber(index, 0, PLAYLIST_ITEMS.length - 1);
-  const shuffledPosition = order.indexOf(trackIndex);
-  pos = shuffledPosition === -1 ? trackIndex : shuffledPosition;
-  player.playVideoAt(trackIndex);
-  playing = true;
-  updateIcon();
-  syncPlaylistSelection();
-}
-
-function readStoredVolume() {
-  try {
-    const stored = parseInt(localStorage.getItem(VOLUME_STORAGE_KEY), 10);
-    if (Number.isFinite(stored)) {
-      return clampNumber(stored, 0, 100);
-    }
-  } catch (error) {}
-  return DEFAULT_VOLUME;
-}
-
-function writeStoredVolume(value) {
-  try {
-    localStorage.setItem(VOLUME_STORAGE_KEY, String(value));
-  } catch (error) {}
 }
 
 function activeFillWidth(value) {
@@ -207,17 +323,21 @@ function buildBars() {
 function syncEq(value) {
   const width = activeEqWidth(value);
   const fillWidth = activeFillWidth(value);
+
   eq.style.width = `${width}px`;
   cover.style.left = `${fillWidth}px`;
   eqGlow.style.width = `${fillWidth}px`;
+
   buildBars();
 }
 
 function animateBars() {
   const bars = document.querySelectorAll(".bar");
+
   bars.forEach((bar, index) => {
     const base = BAR_PATTERN[index % BAR_PATTERN.length];
     const motion = playing ? ((Math.sin(Date.now() / 180 + index * 0.75) + 1) * 7 + Math.random() * 4) : 0;
+
     bar.style.height = `${Math.min(96, Math.max(22, base + motion))}%`;
     bar.style.opacity = playing ? "1" : "0.45";
   });
@@ -225,17 +345,88 @@ function animateBars() {
 
 function setVol(nextValue) {
   const value = clampNumber(parseInt(nextValue, 10) || 0, 0, 100);
+
   vol.value = String(value);
   syncEq(value);
   writeStoredVolume(value);
+
   if (hasPlayerMethod("setVolume")) {
     player.setVolume(value);
   }
 }
 
-function shuffle(count) {
-  order = [...Array(count).keys()].sort(() => Math.random() - 0.5);
-  pos = 0;
+function loadCurrentPlaylist(startIndex) {
+  const activePlaylist = getActivePlaylist();
+  const trackIndex = clampNumber(startIndex, 0, activePlaylist.tracks.length - 1);
+
+  if (!hasPlayerMethod("loadPlaylist")) {
+    return false;
+  }
+
+  loadedPlaylistKey = activePlaylist.key;
+  player.loadPlaylist({
+    listType: "playlist",
+    list: activePlaylist.playlistId,
+    index: trackIndex,
+    startSeconds: 0
+  });
+
+  if (audioUnlocked && hasPlayerMethod("unMute")) {
+    try {
+      player.unMute();
+    } catch (error) {}
+  }
+
+  playing = true;
+  updateIcon();
+  syncPlaylistSelection();
+  return true;
+}
+
+function activatePlaylist(key) {
+  const nextPlaylist = getPlaylistByKey(key);
+  const isNewPlaylist = nextPlaylist.key !== currentPlaylistKey;
+
+  currentPlaylistKey = nextPlaylist.key;
+  writeStoredPlaylistKey(currentPlaylistKey);
+
+  if (isNewPlaylist) {
+    order = buildShuffledOrder(nextPlaylist.tracks.length);
+    pos = 0;
+    loadedPlaylistKey = "";
+  }
+
+  renderSettingsUi();
+
+  if (isNewPlaylist && hasPlayerMethod("loadPlaylist")) {
+    loadCurrentPlaylist(order[pos] || 0);
+    return;
+  }
+
+  syncPlaylistSelection();
+}
+
+function playTrack(index) {
+  const activePlaylist = getActivePlaylist();
+  const trackIndex = clampNumber(index, 0, activePlaylist.tracks.length - 1);
+
+  setOrderPosition(trackIndex);
+
+  if (loadedPlaylistKey === currentPlaylistKey && hasPlayerMethod("playVideoAt")) {
+    player.playVideoAt(trackIndex);
+  } else {
+    loadCurrentPlaylist(trackIndex);
+  }
+
+  if (audioUnlocked && hasPlayerMethod("unMute")) {
+    try {
+      player.unMute();
+    } catch (error) {}
+  }
+
+  playing = true;
+  updateIcon();
+  syncPlaylistSelection();
 }
 
 function initYouTubePlayer() {
@@ -247,7 +438,7 @@ function initYouTubePlayer() {
   player = new YT.Player("player", {
     playerVars: {
       listType: "playlist",
-      list: "PLBjhKnTGZP1Bwc4UL1sTF7j1gUR8bh2y5",
+      list: getActivePlaylist().playlistId,
       autoplay: 1,
       mute: 1,
       controls: 0,
@@ -257,15 +448,8 @@ function initYouTubePlayer() {
     events: {
       onReady: () => {
         setVol(vol.value);
-        const list = player.getPlaylist();
-        shuffle(list.length);
-        if (audioUnlocked) {
-          try {
-            player.unMute();
-          } catch (error) {}
-        }
-        player.playVideoAt(order[pos]);
-        syncPlaylistSelection();
+        ensureOrderForActivePlaylist();
+        loadCurrentPlaylist(order[pos] || 0);
       },
       onStateChange: (event) => {
         if (event.data === YT.PlayerState.PLAYING) {
@@ -273,11 +457,13 @@ function initYouTubePlayer() {
           updateIcon();
           syncPlaylistSelection();
         }
+
         if (event.data === YT.PlayerState.PAUSED) {
           playing = false;
           updateIcon();
           syncPlaylistSelection();
         }
+
         if (event.data === YT.PlayerState.ENDED) {
           playing = false;
           updateIcon();
@@ -338,9 +524,15 @@ function nextTrack() {
     return;
   }
 
-  pos += 1;
-  player.playVideoAt(order[pos % order.length]);
-  syncPlaylistSelection();
+  ensureOrderForActivePlaylist();
+  pos = (pos + 1) % order.length;
+
+  if (loadedPlaylistKey !== currentPlaylistKey) {
+    loadCurrentPlaylist(order[pos]);
+  } else {
+    player.playVideoAt(order[pos]);
+    syncPlaylistSelection();
+  }
 }
 
 function prevTrack() {
@@ -348,9 +540,15 @@ function prevTrack() {
     return;
   }
 
+  ensureOrderForActivePlaylist();
   pos = (pos - 1 + order.length) % order.length;
-  player.playVideoAt(order[pos]);
-  syncPlaylistSelection();
+
+  if (loadedPlaylistKey !== currentPlaylistKey) {
+    loadCurrentPlaylist(order[pos]);
+  } else {
+    player.playVideoAt(order[pos]);
+    syncPlaylistSelection();
+  }
 }
 
 document.addEventListener("pointerdown", unlockAudio);
@@ -465,7 +663,7 @@ document.addEventListener("pointerdown", (event) => {
   });
 }());
 
-renderPlaylist();
+renderSettingsUi();
 vol.value = String(readStoredVolume());
 setVol(vol.value);
 animateBars();
@@ -473,3 +671,7 @@ setInterval(animateBars, 120);
 window.addEventListener("resize", () => syncEq(parseInt(vol.value, 10) || 0));
 window.toggleSettingsPanel = toggleSettingsPanel;
 window.closeSettingsPanel = closeSettingsPanel;
+window.playPause = playPause;
+window.nextTrack = nextTrack;
+window.prevTrack = prevTrack;
+window.setVol = setVol;

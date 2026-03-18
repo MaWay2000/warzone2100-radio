@@ -134,7 +134,7 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .settings-kicker {
@@ -164,6 +164,39 @@ body {
 .settings-close:hover {
   border-color: rgba(133, 216, 255, 0.4);
   color: #fff;
+}
+
+.playlist-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.playlist-tab {
+  min-width: 0;
+  padding: 8px 12px;
+  border: 1px solid rgba(116, 180, 236, 0.18);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(20, 30, 42, 0.9) 0%, rgba(9, 15, 22, 0.98) 100%);
+  color: rgba(214, 241, 255, 0.76);
+  font: inherit;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.playlist-tab:hover {
+  border-color: rgba(126, 216, 255, 0.34);
+  color: #fff;
+}
+
+.playlist-tab.is-active {
+  border-color: rgba(129, 233, 255, 0.42);
+  background:
+    linear-gradient(180deg, rgba(37, 87, 116, 0.96) 0%, rgba(10, 44, 63, 0.98) 100%);
+  color: #fff;
+  box-shadow: 0 0 16px rgba(0, 194, 255, 0.16);
 }
 
 .playlist-list {
