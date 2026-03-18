@@ -2,6 +2,7 @@ const DEFAULT_VOLUME = 30;
 const POSITION_STORAGE_KEY = "warzone_radio_position_v1";
 const VOLUME_STORAGE_KEY = "warzone_radio_volume_v1";
 const SHUFFLE_STORAGE_KEY = "warzone_radio_shuffle_v1";
+const DISABLED_TRACKS_STORAGE_KEY = "warzone_radio_disabled_tracks_v1";
 const TRACKS = [
   { id: "Py5lzGVtjAo", title: "Warzone 2100 OST -  Main Menu", length: "3:01" },
   { id: "bv9GzLEOZk4", title: "Warzone 2100 OST - Martin Severn - Nuclear Silence", length: "7:01" },
@@ -43,6 +44,7 @@ let currentTrackIndex = 0;
 let shuffleEnabled = readStoredShuffleState();
 let shuffleOrder = [];
 let shufflePosition = 0;
+let disabledTrackIds = readStoredDisabledTrackIds();
 
 const eq = document.getElementById("eq");
 const cover = document.getElementById("cover");
@@ -76,7 +78,13 @@ function hasPlayerMethod(methodName) {
 }
 
 function buildShuffledOrder(anchorIndex) {
-  const allIndexes = [...Array(TRACKS.length).keys()].filter((index) => index !== anchorIndex);
+  const enabledIndexes = getEnabledTrackIndexes();
+  if (!enabledIndexes.length) {
+    return [];
+  }
+
+  const normalizedAnchor = enabledIndexes.includes(anchorIndex) ? anchorIndex : enabledIndexes[0];
+  const allIndexes = enabledIndexes.filter((index) => index !== normalizedAnchor);
 
   for (let index = allIndexes.length - 1; index > 0; index -= 1) {
     const swapIndex = Math.floor(Math.random() * (index + 1));
@@ -85,7 +93,7 @@ function buildShuffledOrder(anchorIndex) {
     allIndexes[swapIndex] = swapValue;
   }
 
-  return [anchorIndex, ...allIndexes];
+  return [normalizedAnchor, ...allIndexes];
 }
 
 function readStoredVolume() {
@@ -113,10 +121,65 @@ function writeStoredShuffleState(enabled) {
   } catch (error) {}
 }
 
+function readStoredDisabledTrackIds() {
+  try {
+    const stored = JSON.parse(localStorage.getItem(DISABLED_TRACKS_STORAGE_KEY) || "[]");
+    if (Array.isArray(stored)) {
+      const knownIds = new Set(TRACKS.map((track) => track.id));
+      return new Set(stored.filter((id) => knownIds.has(id)));
+    }
+  } catch (error) {}
+
+  return new Set();
+}
+
+function writeStoredDisabledTrackIds() {
+  try {
+    localStorage.setItem(DISABLED_TRACKS_STORAGE_KEY, JSON.stringify([...disabledTrackIds]));
+  } catch (error) {}
+}
+
 function writeStoredVolume(value) {
   try {
     localStorage.setItem(VOLUME_STORAGE_KEY, String(value));
   } catch (error) {}
+}
+
+function isTrackEnabled(index) {
+  return index >= 0 && index < TRACKS.length && !disabledTrackIds.has(TRACKS[index].id);
+}
+
+function getEnabledTrackIndexes() {
+  return TRACKS.map((_, index) => index).filter((index) => isTrackEnabled(index));
+}
+
+function getFirstEnabledTrackIndex() {
+  return TRACKS.findIndex((_, index) => isTrackEnabled(index));
+}
+
+function getLastEnabledTrackIndex() {
+  for (let index = TRACKS.length - 1; index >= 0; index -= 1) {
+    if (isTrackEnabled(index)) {
+      return index;
+    }
+  }
+
+  return -1;
+}
+
+function findEnabledTrackFrom(startIndex, direction) {
+  if (!getEnabledTrackIndexes().length) {
+    return -1;
+  }
+
+  for (let step = 1; step <= TRACKS.length; step += 1) {
+    const candidate = (startIndex + direction * step + TRACKS.length * 10) % TRACKS.length;
+    if (isTrackEnabled(candidate)) {
+      return candidate;
+    }
+  }
+
+  return -1;
 }
 
 function formatTrackTitle(title) {
@@ -161,6 +224,21 @@ function syncShufflePosition(trackIndex) {
   shufflePosition = indexInOrder;
 }
 
+function syncTrackAvailabilityUi() {
+  playlistList.querySelectorAll(".playlist-item").forEach((item) => {
+    const index = parseInt(item.dataset.index, 10);
+    const enabled = isTrackEnabled(index);
+    const checkbox = item.querySelector(".track-toggle");
+
+    item.classList.toggle("is-disabled", !enabled);
+    item.setAttribute("aria-disabled", String(!enabled));
+
+    if (checkbox) {
+      checkbox.checked = enabled;
+    }
+  });
+}
+
 function syncPlaylistSelection() {
   playlistList.querySelectorAll(".playlist-item").forEach((item) => {
     const index = parseInt(item.dataset.index, 10);
@@ -173,16 +251,24 @@ function renderPlaylist() {
   playlistList.innerHTML = "";
 
   TRACKS.forEach((track, index) => {
-    const item = document.createElement("button");
+    const item = document.createElement("div");
     const trackCopy = document.createElement("span");
     const indexLabel = document.createElement("span");
     const name = document.createElement("span");
     const length = document.createElement("span");
+    const checkbox = document.createElement("input");
 
-    item.type = "button";
     item.className = "playlist-item";
     item.dataset.index = String(index);
+    item.tabIndex = 0;
+    item.setAttribute("role", "button");
     item.addEventListener("click", () => playTrack(index));
+    item.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        playTrack(index);
+      }
+    });
 
     indexLabel.className = "playlist-index";
     indexLabel.textContent = String(index + 1).padStart(2, "0");
@@ -195,11 +281,23 @@ function renderPlaylist() {
     length.className = "playlist-length";
     length.textContent = track.length;
 
+    checkbox.type = "checkbox";
+    checkbox.className = "track-toggle";
+    checkbox.checked = isTrackEnabled(index);
+    checkbox.setAttribute("aria-label", `Include ${formatTrackTitle(track.title)}`);
+    checkbox.addEventListener("click", (event) => event.stopPropagation());
+    checkbox.addEventListener("keydown", (event) => event.stopPropagation());
+    checkbox.addEventListener("change", (event) => {
+      event.stopPropagation();
+      setTrackEnabled(index, checkbox.checked);
+    });
+
     trackCopy.append(name);
-    item.append(indexLabel, trackCopy, length);
+    item.append(indexLabel, trackCopy, length, checkbox);
     playlistList.appendChild(item);
   });
 
+  syncTrackAvailabilityUi();
   syncPlaylistSelection();
   updateShuffleUi();
 }
@@ -282,8 +380,54 @@ function setVol(nextValue) {
   }
 }
 
+function stopPlayback() {
+  if (hasPlayerMethod("pauseVideo")) {
+    try {
+      player.pauseVideo();
+    } catch (error) {}
+  }
+
+  playing = false;
+  updateIcon();
+}
+
+function cueTrack(index, options = {}) {
+  const trackIndex = isTrackEnabled(index) ? index : getFirstEnabledTrackIndex();
+  if (trackIndex === -1) {
+    currentTrackIndex = -1;
+    stopPlayback();
+    syncPlaylistSelection();
+    return false;
+  }
+
+  currentTrackIndex = trackIndex;
+  if (shuffleEnabled) {
+    if (options.resetShuffleOrder) {
+      resetShuffleOrder(trackIndex);
+    } else {
+      syncShufflePosition(trackIndex);
+    }
+  }
+
+  if (hasPlayerMethod("cueVideoById")) {
+    player.cueVideoById(TRACKS[trackIndex].id);
+  }
+
+  playing = false;
+  updateIcon();
+  syncPlaylistSelection();
+  return true;
+}
+
 function loadTrack(index, options = {}) {
-  const trackIndex = clampNumber(index, 0, TRACKS.length - 1);
+  const normalizedIndex = clampNumber(index, 0, TRACKS.length - 1);
+  const trackIndex = isTrackEnabled(normalizedIndex) ? normalizedIndex : getFirstEnabledTrackIndex();
+  if (trackIndex === -1) {
+    currentTrackIndex = -1;
+    stopPlayback();
+    syncPlaylistSelection();
+    return false;
+  }
 
   currentTrackIndex = trackIndex;
   if (shuffleEnabled) {
@@ -313,7 +457,68 @@ function loadTrack(index, options = {}) {
 }
 
 function playTrack(index) {
+  if (!isTrackEnabled(index)) {
+    return false;
+  }
+
   loadTrack(index, { resetShuffleOrder: shuffleEnabled });
+  return true;
+}
+
+function setTrackEnabled(index, enabled) {
+  const trackId = TRACKS[index].id;
+
+  if (enabled) {
+    disabledTrackIds.delete(trackId);
+  } else {
+    disabledTrackIds.add(trackId);
+  }
+
+  writeStoredDisabledTrackIds();
+  syncTrackAvailabilityUi();
+
+  const firstEnabledTrackIndex = getFirstEnabledTrackIndex();
+  if (firstEnabledTrackIndex === -1) {
+    currentTrackIndex = -1;
+    shuffleOrder = [];
+    shufflePosition = 0;
+    stopPlayback();
+    syncPlaylistSelection();
+    return;
+  }
+
+  if (!enabled && currentTrackIndex === index) {
+    const fallbackIndex = findEnabledTrackFrom(index, 1);
+    if (fallbackIndex === -1) {
+      currentTrackIndex = -1;
+      stopPlayback();
+      syncPlaylistSelection();
+      return;
+    }
+
+    if (playing) {
+      loadTrack(fallbackIndex, { resetShuffleOrder: shuffleEnabled });
+    } else {
+      cueTrack(fallbackIndex, { resetShuffleOrder: shuffleEnabled });
+    }
+
+    return;
+  }
+
+  if (currentTrackIndex === -1 && enabled) {
+    cueTrack(index, { resetShuffleOrder: shuffleEnabled });
+    return;
+  }
+
+  if (shuffleEnabled) {
+    const anchorIndex = isTrackEnabled(currentTrackIndex) ? currentTrackIndex : firstEnabledTrackIndex;
+    resetShuffleOrder(anchorIndex);
+  } else {
+    shuffleOrder = [];
+    shufflePosition = 0;
+  }
+
+  syncPlaylistSelection();
 }
 
 function toggleShuffleMode() {
@@ -321,7 +526,13 @@ function toggleShuffleMode() {
   writeStoredShuffleState(shuffleEnabled);
 
   if (shuffleEnabled) {
-    resetShuffleOrder(currentTrackIndex);
+    const anchorIndex = isTrackEnabled(currentTrackIndex) ? currentTrackIndex : getFirstEnabledTrackIndex();
+    if (anchorIndex !== -1) {
+      resetShuffleOrder(anchorIndex);
+    } else {
+      shuffleOrder = [];
+      shufflePosition = 0;
+    }
   } else {
     shuffleOrder = [];
     shufflePosition = 0;
@@ -407,6 +618,16 @@ function playPause() {
     return;
   }
 
+  if (currentTrackIndex === -1 || !isTrackEnabled(currentTrackIndex)) {
+    const firstEnabledTrackIndex = getFirstEnabledTrackIndex();
+    if (firstEnabledTrackIndex === -1) {
+      return;
+    }
+
+    loadTrack(firstEnabledTrackIndex, { resetShuffleOrder: shuffleEnabled });
+    return;
+  }
+
   if (playing) {
     player.pauseVideo();
     playing = false;
@@ -419,12 +640,21 @@ function playPause() {
 }
 
 function nextTrack() {
-  if (!TRACKS.length) {
+  const firstEnabledTrackIndex = getFirstEnabledTrackIndex();
+  if (firstEnabledTrackIndex === -1) {
+    currentTrackIndex = -1;
+    stopPlayback();
+    syncPlaylistSelection();
+    return;
+  }
+
+  if (currentTrackIndex === -1 || !isTrackEnabled(currentTrackIndex)) {
+    loadTrack(firstEnabledTrackIndex, { resetShuffleOrder: shuffleEnabled });
     return;
   }
 
   if (shuffleEnabled) {
-    if (shuffleOrder.length !== TRACKS.length) {
+    if (shuffleOrder.length !== getEnabledTrackIndexes().length) {
       resetShuffleOrder(currentTrackIndex);
     }
 
@@ -433,17 +663,27 @@ function nextTrack() {
     return;
   }
 
-  const nextIndex = (currentTrackIndex + 1) % TRACKS.length;
+  const nextIndex = findEnabledTrackFrom(currentTrackIndex, 1);
   loadTrack(nextIndex);
 }
 
 function prevTrack() {
-  if (!TRACKS.length) {
+  const firstEnabledTrackIndex = getFirstEnabledTrackIndex();
+  if (firstEnabledTrackIndex === -1) {
+    currentTrackIndex = -1;
+    stopPlayback();
+    syncPlaylistSelection();
+    return;
+  }
+
+  if (currentTrackIndex === -1 || !isTrackEnabled(currentTrackIndex)) {
+    const lastEnabledTrackIndex = getLastEnabledTrackIndex();
+    loadTrack(lastEnabledTrackIndex === -1 ? firstEnabledTrackIndex : lastEnabledTrackIndex, { resetShuffleOrder: shuffleEnabled });
     return;
   }
 
   if (shuffleEnabled) {
-    if (shuffleOrder.length !== TRACKS.length) {
+    if (shuffleOrder.length !== getEnabledTrackIndexes().length) {
       resetShuffleOrder(currentTrackIndex);
     }
 
@@ -452,7 +692,7 @@ function prevTrack() {
     return;
   }
 
-  const previousIndex = (currentTrackIndex - 1 + TRACKS.length) % TRACKS.length;
+  const previousIndex = findEnabledTrackFrom(currentTrackIndex, -1);
   loadTrack(previousIndex);
 }
 
