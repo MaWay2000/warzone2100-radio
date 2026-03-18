@@ -1,6 +1,25 @@
 const DEFAULT_VOLUME = 30;
 const POSITION_STORAGE_KEY = "warzone_radio_position_v1";
 const VOLUME_STORAGE_KEY = "warzone_radio_volume_v1";
+const PLAYLIST_ITEMS = [
+  { id: "Py5lzGVtjAo", title: "Warzone 2100 OST -  Main Menu", length: "3:01" },
+  { id: "bv9GzLEOZk4", title: "Warzone 2100 OST - Martin Severn - Nuclear Silence", length: "7:01" },
+  { id: "HsgyEmLrNKE", title: "Warzone 2100 OST - Martin Severn - Radar Dish", length: "7:52" },
+  { id: "d5kdmyseI9Q", title: "Warzone 2100 OST - Martin Severn - Enfeebling Emptiness", length: "5:00" },
+  { id: "IA00X8OrmII", title: "Warzone 2100 OST - AlexTheDacian - Uncertain Future", length: "10:59" },
+  { id: "kRyOXti5JrI", title: "Warzone 2100 OST - AlexTheDacian - Recovery Ops", length: "6:59" },
+  { id: "dimG8S09UV8", title: "Warzone 2100 OST - AlexTheDacian - Incoming Transmission", length: "5:13" },
+  { id: "ntjg7_rSUFI", title: "Warzone 2100 OST - AlexTheDacian - My Kind of Wasteland", length: "7:49" },
+  { id: "fapSb205e48", title: "Warzone 2100 OST - AlexTheDacian - Advanced Manufacturing", length: "6:37" },
+  { id: "VVFjtC1v_kI", title: "Warzone 2100 OST - AlexTheDacian - The Project", length: "8:13" },
+  { id: "3JID8x2G0_o", title: "Warzone 2100 OST - AlexTheDacian - The Collective", length: "12:37" },
+  { id: "wyufwpMkzRY", title: "Warzone 2100 OST - AlexTheDacian - Awakend", length: "6:16" },
+  { id: "RR5OTGYxCk8", title: "Warzone 2100 OST - AlexTheDacian - New Dawn", length: "6:32" },
+  { id: "3QutPACeqRg", title: "Warzone 2100 OST - AlexTheDacian - Broken Dreams", length: "7:06" },
+  { id: "yrKdamkYKvk", title: "Warzone 2100 OST - AlexTheDacian - Artifact Beacon", length: "6:06" },
+  { id: "PJ2wav5ERJQ", title: "Warzone 2100 OST  - AlexTheDacian - Unexpected Outcome", length: "6:13" },
+  { id: "USmw4wgv9as", title: "Warzone 2100 OST - AlexTheDacian - Geiger Ghost Extended v2", length: "8:08" }
+];
 
 let player;
 let playing = false;
@@ -8,12 +27,16 @@ let order = [];
 let pos = 0;
 let playerInitialized = false;
 let audioUnlocked = false;
+let settingsOpen = false;
 
 const eq = document.getElementById("eq");
 const cover = document.getElementById("cover");
 const eqGlow = document.getElementById("eqGlow");
 const vol = document.getElementById("vol");
 const tube = document.querySelector(".tube");
+const settingsPanel = document.getElementById("settingsPanel");
+const settingsButton = document.getElementById("settingsButton");
+const playlistList = document.getElementById("playlistList");
 const versionedAsset = window.versionedAsset || ((path) => path);
 const logo = document.querySelector(".logo");
 
@@ -32,6 +55,113 @@ function clampNumber(value, min, max) {
 
 function hasPlayerMethod(methodName) {
   return !!player && typeof player[methodName] === "function";
+}
+
+function formatTrack(item) {
+  const cleaned = item.title.replace(/^Warzone 2100 OST\s*-\s*/i, "").trim();
+  const parts = cleaned.split(/\s*-\s*/).filter(Boolean);
+
+  if (parts.length === 1) {
+    return { name: parts[0], artist: "Warzone 2100 Radio" };
+  }
+
+  return {
+    artist: parts[0],
+    name: parts.slice(1).join(" - ")
+  };
+}
+
+function getCurrentPlaylistIndex() {
+  if (hasPlayerMethod("getPlaylistIndex")) {
+    const currentIndex = player.getPlaylistIndex();
+    if (Number.isInteger(currentIndex) && currentIndex >= 0) {
+      return currentIndex;
+    }
+  }
+
+  if (order.length && Number.isInteger(pos) && pos >= 0) {
+    return order[pos % order.length];
+  }
+
+  return 0;
+}
+
+function syncPlaylistSelection() {
+  const currentIndex = getCurrentPlaylistIndex();
+  playlistList.querySelectorAll(".playlist-item").forEach((item, index) => {
+    item.classList.toggle("is-active", index === currentIndex);
+  });
+}
+
+function renderPlaylist() {
+  playlistList.innerHTML = "";
+
+  PLAYLIST_ITEMS.forEach((track, index) => {
+    const item = document.createElement("button");
+    const trackCopy = document.createElement("span");
+    const indexLabel = document.createElement("span");
+    const name = document.createElement("span");
+    const artist = document.createElement("span");
+    const length = document.createElement("span");
+    const formatted = formatTrack(track);
+
+    item.type = "button";
+    item.className = "playlist-item";
+    item.addEventListener("click", () => playTrack(index));
+
+    indexLabel.className = "playlist-index";
+    indexLabel.textContent = String(index + 1).padStart(2, "0");
+
+    trackCopy.className = "playlist-copy";
+
+    name.className = "playlist-name";
+    name.textContent = formatted.name;
+
+    artist.className = "playlist-artist";
+    artist.textContent = formatted.artist;
+
+    length.className = "playlist-length";
+    length.textContent = track.length;
+
+    trackCopy.append(name, artist);
+    item.append(indexLabel, trackCopy, length);
+    playlistList.appendChild(item);
+  });
+
+  syncPlaylistSelection();
+}
+
+function setSettingsOpen(nextState) {
+  settingsOpen = nextState;
+  settingsPanel.classList.toggle("is-open", settingsOpen);
+  settingsButton.classList.toggle("is-open", settingsOpen);
+  settingsPanel.setAttribute("aria-hidden", String(!settingsOpen));
+
+  if (settingsOpen) {
+    syncPlaylistSelection();
+  }
+}
+
+function toggleSettingsPanel() {
+  setSettingsOpen(!settingsOpen);
+}
+
+function closeSettingsPanel() {
+  setSettingsOpen(false);
+}
+
+function playTrack(index) {
+  if (!hasPlayerMethod("playVideoAt")) {
+    return;
+  }
+
+  const trackIndex = clampNumber(index, 0, PLAYLIST_ITEMS.length - 1);
+  const shuffledPosition = order.indexOf(trackIndex);
+  pos = shuffledPosition === -1 ? trackIndex : shuffledPosition;
+  player.playVideoAt(trackIndex);
+  playing = true;
+  updateIcon();
+  syncPlaylistSelection();
 }
 
 function readStoredVolume() {
@@ -135,19 +265,23 @@ function initYouTubePlayer() {
           } catch (error) {}
         }
         player.playVideoAt(order[pos]);
+        syncPlaylistSelection();
       },
       onStateChange: (event) => {
         if (event.data === YT.PlayerState.PLAYING) {
           playing = true;
           updateIcon();
+          syncPlaylistSelection();
         }
         if (event.data === YT.PlayerState.PAUSED) {
           playing = false;
           updateIcon();
+          syncPlaylistSelection();
         }
         if (event.data === YT.PlayerState.ENDED) {
           playing = false;
           updateIcon();
+          syncPlaylistSelection();
           nextTrack();
         }
       }
@@ -206,6 +340,7 @@ function nextTrack() {
 
   pos += 1;
   player.playVideoAt(order[pos % order.length]);
+  syncPlaylistSelection();
 }
 
 function prevTrack() {
@@ -215,10 +350,27 @@ function prevTrack() {
 
   pos = (pos - 1 + order.length) % order.length;
   player.playVideoAt(order[pos]);
+  syncPlaylistSelection();
 }
 
 document.addEventListener("pointerdown", unlockAudio);
 document.addEventListener("keydown", unlockAudio);
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeSettingsPanel();
+  }
+});
+document.addEventListener("pointerdown", (event) => {
+  if (!settingsOpen) {
+    return;
+  }
+
+  if (event.target.closest("#settingsPanel, #settingsButton")) {
+    return;
+  }
+
+  closeSettingsPanel();
+});
 
 (function initDragPosition() {
   const wrap = document.getElementById("radioWrap");
@@ -248,7 +400,7 @@ document.addEventListener("keydown", unlockAudio);
   } catch (error) {}
 
   function onPointerDown(event) {
-    if (event.target.closest(".btn, .tube, input, button")) {
+    if (event.target.closest(".btn, .tube, input, button, .settings-panel")) {
       return;
     }
 
@@ -313,8 +465,11 @@ document.addEventListener("keydown", unlockAudio);
   });
 }());
 
+renderPlaylist();
 vol.value = String(readStoredVolume());
 setVol(vol.value);
 animateBars();
 setInterval(animateBars, 120);
 window.addEventListener("resize", () => syncEq(parseInt(vol.value, 10) || 0));
+window.toggleSettingsPanel = toggleSettingsPanel;
+window.closeSettingsPanel = closeSettingsPanel;
