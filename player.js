@@ -28,25 +28,6 @@ const PLAYLISTS = [
     ]
   },
   {
-    key: "legacy",
-    title: "Warzone 2100 - Legacy Soundtrack",
-    playlistId: "PL-Qt8zXK51N-9dePu7NYvO9B8ffzS5_kz",
-    tracks: [
-      { id: "rV3jD-XpHQk", title: "Warzone 2100 - Legacy Soundtrack - Track 4 - Uncertain Future", length: "10:59" },
-      { id: "bs_fpYuRW2U", title: "Warzone 2100 - Legacy Soundtrack - Track 5 - Recovery Ops", length: "6:59" },
-      { id: "AAmyIgEjGGY", title: "Warzone 2100 - Legacy Soundtrack - Track 6 - Incoming Transmission", length: "5:13" },
-      { id: "qB1TF77rlNs", title: "Warzone 2100 - Legacy Soundtrack - Track 7 - My Kind of Wasteland", length: "7:49" },
-      { id: "OwlhObtvdQM", title: "Warzone 2100 - Legacy Soundtrack - Track 8 - Advanced Manufacturing", length: "6:37" },
-      { id: "neQ43B7RCTM", title: "Warzone 2100 - Legacy Soundtrack - Track 9 - The Project", length: "8:13" },
-      { id: "uw4hHN0hUbk", title: "Warzone 2100 - Legacy Soundtrack - Track 10 - The Collective", length: "12:37" },
-      { id: "PC3AmvtA3bw", title: "Warzone 2100 - Legacy Soundtrack - Track 11 - Awakened", length: "6:16" },
-      { id: "HqTOP8KJnGg", title: "Warzone 2100 - Legacy Soundtrack - Track 12 - New Dawn", length: "6:32" },
-      { id: "7ZnRs3KMlfA", title: "Warzone 2100 - Legacy Soundtrack - Track 13 - Broken Dreams", length: "7:06" },
-      { id: "lvXpOsdEwks", title: "Warzone 2100 - Legacy Soundtrack - Track 14 - Artifact Beacon", length: "6:06" },
-      { id: "2Bqi1JmAotg", title: "Warzone 2100 - Legacy Soundtrack - Track 15 - Unexpected Outcome", length: "6:13" }
-    ]
-  },
-  {
     key: "aftermath",
     title: "Warzone 2100 - Aftermath Soundtrack",
     playlistId: "PL-Qt8zXK51N_2LsxsL7VA4VRoFPAe3v_Z",
@@ -138,6 +119,8 @@ function readStoredPlaylistKey() {
     if (PLAYLISTS.some((playlist) => playlist.key === stored)) {
       return stored;
     }
+
+    localStorage.setItem(ACTIVE_PLAYLIST_STORAGE_KEY, PLAYLISTS[0].key);
   } catch (error) {}
 
   return PLAYLISTS[0].key;
