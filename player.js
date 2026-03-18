@@ -2,7 +2,8 @@ const DEFAULT_VOLUME = 30;
 const POSITION_STORAGE_KEY = "warzone_radio_position_v1";
 const VOLUME_STORAGE_KEY = "warzone_radio_volume_v1";
 const SHUFFLE_STORAGE_KEY = "warzone_radio_shuffle_v1";
-const DISABLED_TRACKS_STORAGE_KEY = "warzone_radio_disabled_tracks_v1";
+const DISABLED_TRACKS_STORAGE_KEY = "warzone_radio_disabled_tracks_v2";
+const LEGACY_DISABLED_TRACKS_STORAGE_KEY = "warzone_radio_disabled_tracks_v1";
 const TRACKS = [
   { id: "Py5lzGVtjAo", title: "Warzone 2100 OST -  Main Menu", length: "3:01" },
   { id: "bv9GzLEOZk4", title: "Warzone 2100 OST - Martin Severn - Nuclear Silence", length: "7:01" },
@@ -34,6 +35,8 @@ const TRACKS = [
   { id: "nb9kl8kVahE", title: "Warzone 2100 - Aftermath Soundtrack - Track 26 - Just Rewards", length: "14:08" },
   { id: "1JUDSwBRXOU", title: "Warzone 2100 - Aftermath Soundtrack - Track 27 - Launch Codes", length: "6:59" }
 ];
+const KNOWN_TRACK_IDS = new Set(TRACKS.map((track) => track.id));
+const DEFAULT_DISABLED_TRACK_IDS = new Set([TRACKS[0].id]);
 
 let player;
 let playing = false;
@@ -123,14 +126,27 @@ function writeStoredShuffleState(enabled) {
 
 function readStoredDisabledTrackIds() {
   try {
-    const stored = JSON.parse(localStorage.getItem(DISABLED_TRACKS_STORAGE_KEY) || "[]");
-    if (Array.isArray(stored)) {
-      const knownIds = new Set(TRACKS.map((track) => track.id));
-      return new Set(stored.filter((id) => knownIds.has(id)));
+    const stored = localStorage.getItem(DISABLED_TRACKS_STORAGE_KEY);
+    if (stored !== null) {
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed)) {
+        return new Set(parsed.filter((id) => KNOWN_TRACK_IDS.has(id)));
+      }
+    }
+
+    const legacyStored = localStorage.getItem(LEGACY_DISABLED_TRACKS_STORAGE_KEY);
+    if (legacyStored !== null) {
+      const parsedLegacy = JSON.parse(legacyStored);
+      if (Array.isArray(parsedLegacy)) {
+        const migratedIds = new Set(parsedLegacy.filter((id) => KNOWN_TRACK_IDS.has(id)));
+        DEFAULT_DISABLED_TRACK_IDS.forEach((id) => migratedIds.add(id));
+        localStorage.setItem(DISABLED_TRACKS_STORAGE_KEY, JSON.stringify([...migratedIds]));
+        return migratedIds;
+      }
     }
   } catch (error) {}
 
-  return new Set();
+  return new Set(DEFAULT_DISABLED_TRACK_IDS);
 }
 
 function writeStoredDisabledTrackIds() {
