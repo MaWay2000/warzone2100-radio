@@ -2,61 +2,44 @@ const DEFAULT_VOLUME = 30;
 const POSITION_STORAGE_KEY = "warzone_radio_position_v1";
 const VOLUME_STORAGE_KEY = "warzone_radio_volume_v1";
 const ACTIVE_PLAYLIST_STORAGE_KEY = "warzone_radio_playlist_v1";
-const PLAYLISTS = [
-  {
-    key: "ost",
-    title: "Warzone 2100 OST",
-    playlistId: "PLBjhKnTGZP1Bwc4UL1sTF7j1gUR8bh2y5",
-    tracks: [
-      { id: "Py5lzGVtjAo", title: "Warzone 2100 OST -  Main Menu", length: "3:01" },
-      { id: "bv9GzLEOZk4", title: "Warzone 2100 OST - Martin Severn - Nuclear Silence", length: "7:01" },
-      { id: "HsgyEmLrNKE", title: "Warzone 2100 OST - Martin Severn - Radar Dish", length: "7:52" },
-      { id: "d5kdmyseI9Q", title: "Warzone 2100 OST - Martin Severn - Enfeebling Emptiness", length: "5:00" },
-      { id: "IA00X8OrmII", title: "Warzone 2100 OST - AlexTheDacian - Uncertain Future", length: "10:59" },
-      { id: "kRyOXti5JrI", title: "Warzone 2100 OST - AlexTheDacian - Recovery Ops", length: "6:59" },
-      { id: "dimG8S09UV8", title: "Warzone 2100 OST - AlexTheDacian - Incoming Transmission", length: "5:13" },
-      { id: "ntjg7_rSUFI", title: "Warzone 2100 OST - AlexTheDacian - My Kind of Wasteland", length: "7:49" },
-      { id: "fapSb205e48", title: "Warzone 2100 OST - AlexTheDacian - Advanced Manufacturing", length: "6:37" },
-      { id: "VVFjtC1v_kI", title: "Warzone 2100 OST - AlexTheDacian - The Project", length: "8:13" },
-      { id: "3JID8x2G0_o", title: "Warzone 2100 OST - AlexTheDacian - The Collective", length: "12:37" },
-      { id: "wyufwpMkzRY", title: "Warzone 2100 OST - AlexTheDacian - Awakend", length: "6:16" },
-      { id: "RR5OTGYxCk8", title: "Warzone 2100 OST - AlexTheDacian - New Dawn", length: "6:32" },
-      { id: "3QutPACeqRg", title: "Warzone 2100 OST - AlexTheDacian - Broken Dreams", length: "7:06" },
-      { id: "yrKdamkYKvk", title: "Warzone 2100 OST - AlexTheDacian - Artifact Beacon", length: "6:06" },
-      { id: "PJ2wav5ERJQ", title: "Warzone 2100 OST  - AlexTheDacian - Unexpected Outcome", length: "6:13" },
-      { id: "USmw4wgv9as", title: "Warzone 2100 OST - AlexTheDacian - Geiger Ghost Extended v2", length: "8:08" }
-    ]
-  },
-  {
-    key: "aftermath",
-    title: "Warzone 2100 - Aftermath Soundtrack",
-    playlistId: "PL-Qt8zXK51N_2LsxsL7VA4VRoFPAe3v_Z",
-    tracks: [
-      { id: "MEpytWvLP5Q", title: "Warzone 2100 - Aftermath Soundtrack - Menu Theme [Enhanced]", length: "10:49" },
-      { id: "sK0C42Q_MAk", title: "Warzone 2100 - Aftermath Soundtrack - Track 17 - Nuclear Heartbeat", length: "7:58" },
-      { id: "OeKNXc55Iow", title: "Warzone 2100 - Aftermath Soundtrack - Track 18 - Moonlight Tactics", length: "10:22" },
-      { id: "Q9xRuvG-XC4", title: "Warzone 2100 - Aftermath Soundtrack - Track 19 - Undisclosed Location", length: "6:02" },
-      { id: "VG4K1b2FJrE", title: "Warzone 2100 - Aftermath Soundtrack - Track 20 - Shifting Realities", length: "9:46" },
-      { id: "g76gc2GBeME", title: "Warzone 2100 - Aftermath Soundtrack - Track 21 - The Collapse", length: "10:55" },
-      { id: "SF1Cdxw91Vw", title: "Warzone 2100 - Aftermath Soundtrack - Track 22 - Aftershocks", length: "9:49" },
-      { id: "eK9QHcoDjHM", title: "Warzone 2100 - Aftermath Soundtrack - Track 23 - Blast Zone", length: "11:21" },
-      { id: "d6jpvv8TE0U", title: "Warzone 2100 - Aftermath Soundtrack - Track 24 - Reclamation", length: "8:48" },
-      { id: "OYIx649A_bY", title: "Warzone 2100 - Aftermath Soundtrack - Track 25 - Rainout", length: "9:55" },
-      { id: "nb9kl8kVahE", title: "Warzone 2100 - Aftermath Soundtrack - Track 26 - Just Rewards", length: "14:08" },
-      { id: "1JUDSwBRXOU", title: "Warzone 2100 - Aftermath Soundtrack - Track 27 - Launch Codes", length: "6:59" }
-    ]
-  }
+const TRACKS = [
+  { id: "Py5lzGVtjAo", title: "Warzone 2100 OST -  Main Menu", length: "3:01" },
+  { id: "bv9GzLEOZk4", title: "Warzone 2100 OST - Martin Severn - Nuclear Silence", length: "7:01" },
+  { id: "HsgyEmLrNKE", title: "Warzone 2100 OST - Martin Severn - Radar Dish", length: "7:52" },
+  { id: "d5kdmyseI9Q", title: "Warzone 2100 OST - Martin Severn - Enfeebling Emptiness", length: "5:00" },
+  { id: "IA00X8OrmII", title: "Warzone 2100 OST - AlexTheDacian - Uncertain Future", length: "10:59" },
+  { id: "kRyOXti5JrI", title: "Warzone 2100 OST - AlexTheDacian - Recovery Ops", length: "6:59" },
+  { id: "dimG8S09UV8", title: "Warzone 2100 OST - AlexTheDacian - Incoming Transmission", length: "5:13" },
+  { id: "ntjg7_rSUFI", title: "Warzone 2100 OST - AlexTheDacian - My Kind of Wasteland", length: "7:49" },
+  { id: "fapSb205e48", title: "Warzone 2100 OST - AlexTheDacian - Advanced Manufacturing", length: "6:37" },
+  { id: "VVFjtC1v_kI", title: "Warzone 2100 OST - AlexTheDacian - The Project", length: "8:13" },
+  { id: "3JID8x2G0_o", title: "Warzone 2100 OST - AlexTheDacian - The Collective", length: "12:37" },
+  { id: "wyufwpMkzRY", title: "Warzone 2100 OST - AlexTheDacian - Awakend", length: "6:16" },
+  { id: "RR5OTGYxCk8", title: "Warzone 2100 OST - AlexTheDacian - New Dawn", length: "6:32" },
+  { id: "3QutPACeqRg", title: "Warzone 2100 OST - AlexTheDacian - Broken Dreams", length: "7:06" },
+  { id: "yrKdamkYKvk", title: "Warzone 2100 OST - AlexTheDacian - Artifact Beacon", length: "6:06" },
+  { id: "PJ2wav5ERJQ", title: "Warzone 2100 OST  - AlexTheDacian - Unexpected Outcome", length: "6:13" },
+  { id: "USmw4wgv9as", title: "Warzone 2100 OST - AlexTheDacian - Geiger Ghost Extended v2", length: "8:08" },
+  { id: "MEpytWvLP5Q", title: "Warzone 2100 - Aftermath Soundtrack - Menu Theme [Enhanced]", length: "10:49" },
+  { id: "sK0C42Q_MAk", title: "Warzone 2100 - Aftermath Soundtrack - Track 17 - Nuclear Heartbeat", length: "7:58" },
+  { id: "OeKNXc55Iow", title: "Warzone 2100 - Aftermath Soundtrack - Track 18 - Moonlight Tactics", length: "10:22" },
+  { id: "Q9xRuvG-XC4", title: "Warzone 2100 - Aftermath Soundtrack - Track 19 - Undisclosed Location", length: "6:02" },
+  { id: "VG4K1b2FJrE", title: "Warzone 2100 - Aftermath Soundtrack - Track 20 - Shifting Realities", length: "9:46" },
+  { id: "g76gc2GBeME", title: "Warzone 2100 - Aftermath Soundtrack - Track 21 - The Collapse", length: "10:55" },
+  { id: "SF1Cdxw91Vw", title: "Warzone 2100 - Aftermath Soundtrack - Track 22 - Aftershocks", length: "9:49" },
+  { id: "eK9QHcoDjHM", title: "Warzone 2100 - Aftermath Soundtrack - Track 23 - Blast Zone", length: "11:21" },
+  { id: "d6jpvv8TE0U", title: "Warzone 2100 - Aftermath Soundtrack - Track 24 - Reclamation", length: "8:48" },
+  { id: "OYIx649A_bY", title: "Warzone 2100 - Aftermath Soundtrack - Track 25 - Rainout", length: "9:55" },
+  { id: "nb9kl8kVahE", title: "Warzone 2100 - Aftermath Soundtrack - Track 26 - Just Rewards", length: "14:08" },
+  { id: "1JUDSwBRXOU", title: "Warzone 2100 - Aftermath Soundtrack - Track 27 - Launch Codes", length: "6:59" }
 ];
 
 let player;
 let playing = false;
-let order = [];
-let pos = 0;
 let playerInitialized = false;
 let audioUnlocked = false;
 let settingsOpen = false;
-let currentPlaylistKey = readStoredPlaylistKey();
-let loadedPlaylistKey = "";
+let currentTrackIndex = 0;
 
 const eq = document.getElementById("eq");
 const cover = document.getElementById("cover");
@@ -66,7 +49,6 @@ const tube = document.querySelector(".tube");
 const settingsPanel = document.getElementById("settingsPanel");
 const settingsButton = document.getElementById("settingsButton");
 const settingsTitle = document.getElementById("settingsTitle");
-const playlistTabs = document.getElementById("playlistTabs");
 const playlistList = document.getElementById("playlistList");
 const versionedAsset = window.versionedAsset || ((path) => path);
 const logo = document.querySelector(".logo");
@@ -80,56 +62,16 @@ if (logo && logo.dataset.assetPath) {
   logo.src = versionedAsset(logo.dataset.assetPath);
 }
 
+try {
+  localStorage.removeItem(ACTIVE_PLAYLIST_STORAGE_KEY);
+} catch (error) {}
+
 function clampNumber(value, min, max) {
   return Math.max(min, Math.min(max, value));
 }
 
-function buildShuffledOrder(count) {
-  const nextOrder = [...Array(count).keys()];
-
-  for (let index = nextOrder.length - 1; index > 0; index -= 1) {
-    const swapIndex = Math.floor(Math.random() * (index + 1));
-    const swapValue = nextOrder[index];
-    nextOrder[index] = nextOrder[swapIndex];
-    nextOrder[swapIndex] = swapValue;
-  }
-
-  return nextOrder;
-}
-
 function hasPlayerMethod(methodName) {
   return !!player && typeof player[methodName] === "function";
-}
-
-function getPlaylistByKey(key) {
-  return PLAYLISTS.find((playlist) => playlist.key === key) || PLAYLISTS[0];
-}
-
-function getActivePlaylist() {
-  return getPlaylistByKey(currentPlaylistKey);
-}
-
-function getTrackCount() {
-  return getActivePlaylist().tracks.length;
-}
-
-function readStoredPlaylistKey() {
-  try {
-    const stored = localStorage.getItem(ACTIVE_PLAYLIST_STORAGE_KEY);
-    if (PLAYLISTS.some((playlist) => playlist.key === stored)) {
-      return stored;
-    }
-
-    localStorage.setItem(ACTIVE_PLAYLIST_STORAGE_KEY, PLAYLISTS[0].key);
-  } catch (error) {}
-
-  return PLAYLISTS[0].key;
-}
-
-function writeStoredPlaylistKey(key) {
-  try {
-    localStorage.setItem(ACTIVE_PLAYLIST_STORAGE_KEY, key);
-  } catch (error) {}
 }
 
 function readStoredVolume() {
@@ -149,93 +91,31 @@ function writeStoredVolume(value) {
   } catch (error) {}
 }
 
-function formatTrack(item, playlistTitle) {
-  const playlistParts = playlistTitle
-    .split(/\s*-\s*/)
-    .map((part) => part.trim())
-    .filter(Boolean);
-  const parts = item.title
-    .split(/\s*-\s*/)
-    .map((part) => part.trim())
-    .filter(Boolean);
-  const filtered = parts.filter((part) => {
-    return !playlistParts.some((playlistPart) => playlistPart.toLowerCase() === part.toLowerCase()) &&
-      !/^Track \d+$/i.test(part);
-  });
-
-  if (!filtered.length) {
-    return { name: item.title, artist: playlistTitle };
-  }
-
-  if (filtered.length === 1) {
-    return { name: filtered[0], artist: playlistTitle };
-  }
-
-  return {
-    artist: filtered[0],
-    name: filtered.slice(1).join(" - ")
-  };
+function formatTrackTitle(title) {
+  return title
+    .replace(/^Warzone 2100 OST\s*-\s*/i, "")
+    .replace(/^Warzone 2100\s*-\s*Aftermath Soundtrack\s*-\s*/i, "")
+    .replace(/^Track \d+\s*-\s*/i, "")
+    .trim();
 }
 
-function ensureOrderForActivePlaylist() {
-  if (!order.length || order.length !== getTrackCount()) {
-    order = buildShuffledOrder(getTrackCount());
-    pos = 0;
-  }
-}
-
-function setOrderPosition(trackIndex) {
-  ensureOrderForActivePlaylist();
-
-  const shuffledPosition = order.indexOf(trackIndex);
-  pos = shuffledPosition >= 0 ? shuffledPosition : 0;
-}
-
-function getCurrentPlaylistIndex() {
-  if (loadedPlaylistKey === currentPlaylistKey && hasPlayerMethod("getPlaylistIndex")) {
-    const currentIndex = player.getPlaylistIndex();
-    if (Number.isInteger(currentIndex) && currentIndex >= 0) {
-      return currentIndex;
-    }
-  }
-
-  if (order.length && Number.isInteger(pos) && pos >= 0 && pos < order.length) {
-    return order[pos];
-  }
-
-  return 0;
-}
-
-function renderPlaylistTabs() {
-  playlistTabs.innerHTML = "";
-
-  PLAYLISTS.forEach((playlist) => {
-    const tab = document.createElement("button");
-
-    tab.type = "button";
-    tab.className = "playlist-tab";
-    tab.dataset.key = playlist.key;
-    tab.textContent = playlist.title;
-    tab.addEventListener("click", () => activatePlaylist(playlist.key));
-
-    playlistTabs.appendChild(tab);
+function syncPlaylistSelection() {
+  playlistList.querySelectorAll(".playlist-item").forEach((item) => {
+    const index = parseInt(item.dataset.index, 10);
+    item.classList.toggle("is-active", index === currentTrackIndex);
   });
 }
 
 function renderPlaylist() {
-  const activePlaylist = getActivePlaylist();
-
-  settingsTitle.textContent = activePlaylist.title;
+  settingsTitle.textContent = "All Tracks";
   playlistList.innerHTML = "";
 
-  activePlaylist.tracks.forEach((track, index) => {
+  TRACKS.forEach((track, index) => {
     const item = document.createElement("button");
     const trackCopy = document.createElement("span");
     const indexLabel = document.createElement("span");
     const name = document.createElement("span");
-    const artist = document.createElement("span");
     const length = document.createElement("span");
-    const formatted = formatTrack(track, activePlaylist.title);
 
     item.type = "button";
     item.className = "playlist-item";
@@ -248,38 +128,17 @@ function renderPlaylist() {
     trackCopy.className = "playlist-copy";
 
     name.className = "playlist-name";
-    name.textContent = formatted.name;
-
-    artist.className = "playlist-artist";
-    artist.textContent = formatted.artist;
+    name.textContent = formatTrackTitle(track.title);
 
     length.className = "playlist-length";
     length.textContent = track.length;
 
-    trackCopy.append(name, artist);
+    trackCopy.append(name);
     item.append(indexLabel, trackCopy, length);
     playlistList.appendChild(item);
   });
 
   syncPlaylistSelection();
-}
-
-function renderSettingsUi() {
-  renderPlaylistTabs();
-  renderPlaylist();
-}
-
-function syncPlaylistSelection() {
-  const currentIndex = getCurrentPlaylistIndex();
-
-  playlistTabs.querySelectorAll(".playlist-tab").forEach((item) => {
-    item.classList.toggle("is-active", item.dataset.key === currentPlaylistKey);
-  });
-
-  playlistList.querySelectorAll(".playlist-item").forEach((item) => {
-    const index = parseInt(item.dataset.index, 10);
-    item.classList.toggle("is-active", index === currentIndex);
-  });
 }
 
 function setSettingsOpen(nextState) {
@@ -360,21 +219,16 @@ function setVol(nextValue) {
   }
 }
 
-function loadCurrentPlaylist(startIndex) {
-  const activePlaylist = getActivePlaylist();
-  const trackIndex = clampNumber(startIndex, 0, activePlaylist.tracks.length - 1);
+function loadTrack(index) {
+  const trackIndex = clampNumber(index, 0, TRACKS.length - 1);
 
-  if (!hasPlayerMethod("loadPlaylist")) {
+  currentTrackIndex = trackIndex;
+
+  if (!hasPlayerMethod("loadVideoById")) {
     return false;
   }
 
-  loadedPlaylistKey = activePlaylist.key;
-  player.loadPlaylist({
-    listType: "playlist",
-    list: activePlaylist.playlistId,
-    index: trackIndex,
-    startSeconds: 0
-  });
+  player.loadVideoById(TRACKS[trackIndex].id);
 
   if (audioUnlocked && hasPlayerMethod("unMute")) {
     try {
@@ -388,50 +242,8 @@ function loadCurrentPlaylist(startIndex) {
   return true;
 }
 
-function activatePlaylist(key) {
-  const nextPlaylist = getPlaylistByKey(key);
-  const isNewPlaylist = nextPlaylist.key !== currentPlaylistKey;
-
-  currentPlaylistKey = nextPlaylist.key;
-  writeStoredPlaylistKey(currentPlaylistKey);
-
-  if (isNewPlaylist) {
-    order = buildShuffledOrder(nextPlaylist.tracks.length);
-    pos = 0;
-    loadedPlaylistKey = "";
-  }
-
-  renderSettingsUi();
-
-  if (isNewPlaylist && hasPlayerMethod("loadPlaylist")) {
-    loadCurrentPlaylist(order[pos] || 0);
-    return;
-  }
-
-  syncPlaylistSelection();
-}
-
 function playTrack(index) {
-  const activePlaylist = getActivePlaylist();
-  const trackIndex = clampNumber(index, 0, activePlaylist.tracks.length - 1);
-
-  setOrderPosition(trackIndex);
-
-  if (loadedPlaylistKey === currentPlaylistKey && hasPlayerMethod("playVideoAt")) {
-    player.playVideoAt(trackIndex);
-  } else {
-    loadCurrentPlaylist(trackIndex);
-  }
-
-  if (audioUnlocked && hasPlayerMethod("unMute")) {
-    try {
-      player.unMute();
-    } catch (error) {}
-  }
-
-  playing = true;
-  updateIcon();
-  syncPlaylistSelection();
+  loadTrack(index);
 }
 
 function initYouTubePlayer() {
@@ -441,9 +253,8 @@ function initYouTubePlayer() {
 
   playerInitialized = true;
   player = new YT.Player("player", {
+    videoId: TRACKS[0].id,
     playerVars: {
-      listType: "playlist",
-      list: getActivePlaylist().playlistId,
       autoplay: 1,
       mute: 1,
       controls: 0,
@@ -453,8 +264,7 @@ function initYouTubePlayer() {
     events: {
       onReady: () => {
         setVol(vol.value);
-        ensureOrderForActivePlaylist();
-        loadCurrentPlaylist(order[pos] || 0);
+        loadTrack(currentTrackIndex);
       },
       onStateChange: (event) => {
         if (event.data === YT.PlayerState.PLAYING) {
@@ -525,35 +335,21 @@ function playPause() {
 }
 
 function nextTrack() {
-  if (!hasPlayerMethod("playVideoAt")) {
+  if (!TRACKS.length) {
     return;
   }
 
-  ensureOrderForActivePlaylist();
-  pos = (pos + 1) % order.length;
-
-  if (loadedPlaylistKey !== currentPlaylistKey) {
-    loadCurrentPlaylist(order[pos]);
-  } else {
-    player.playVideoAt(order[pos]);
-    syncPlaylistSelection();
-  }
+  const nextIndex = (currentTrackIndex + 1) % TRACKS.length;
+  loadTrack(nextIndex);
 }
 
 function prevTrack() {
-  if (!hasPlayerMethod("playVideoAt")) {
+  if (!TRACKS.length) {
     return;
   }
 
-  ensureOrderForActivePlaylist();
-  pos = (pos - 1 + order.length) % order.length;
-
-  if (loadedPlaylistKey !== currentPlaylistKey) {
-    loadCurrentPlaylist(order[pos]);
-  } else {
-    player.playVideoAt(order[pos]);
-    syncPlaylistSelection();
-  }
+  const previousIndex = (currentTrackIndex - 1 + TRACKS.length) % TRACKS.length;
+  loadTrack(previousIndex);
 }
 
 document.addEventListener("pointerdown", unlockAudio);
@@ -668,7 +464,7 @@ document.addEventListener("pointerdown", (event) => {
   });
 }());
 
-renderSettingsUi();
+renderPlaylist();
 vol.value = String(readStoredVolume());
 setVol(vol.value);
 animateBars();
