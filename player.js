@@ -346,11 +346,30 @@ function closeSettingsPanel() {
   setSettingsOpen(false);
 }
 
+function persistWrapPosition(left, top) {
+  try {
+    localStorage.setItem(POSITION_STORAGE_KEY, JSON.stringify({ left, top }));
+  } catch (error) {}
+}
+
+function pinWrapPosition() {
+  if (!radioWrap) {
+    return;
+  }
+
+  const rect = radioWrap.getBoundingClientRect();
+  radioWrap.style.left = `${rect.left}px`;
+  radioWrap.style.top = `${rect.top}px`;
+  radioWrap.style.right = "auto";
+  persistWrapPosition(rect.left, rect.top);
+}
+
 function setPlayerBarVisible(visible) {
   if (!radioWrap) {
     return;
   }
 
+  pinWrapPosition();
   radioWrap.classList.toggle("is-player-hidden", !visible);
 
   if (logoToggle) {
