@@ -78,8 +78,9 @@ body {
   overflow: hidden;
   pointer-events: none;
   z-index: 2;
-  opacity: 0.34;
+  opacity: 0.14;
   mix-blend-mode: screen;
+  animation: logoSkyFade 4.2s ease-in-out infinite;
 }
 
 .logo-sky::before,
@@ -92,55 +93,42 @@ body {
 .logo-sky::before {
   inset: -6% -8% -20%;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.56) 0%, rgba(255, 244, 221, 0.22) 60%, transparent 100%),
-    radial-gradient(circle at 28% 22%, rgba(255, 255, 255, 0.82) 0 18%, transparent 40%),
-    radial-gradient(circle at 74% 20%, rgba(255, 255, 255, 0.58) 0 15%, transparent 38%),
-    radial-gradient(circle at 52% 38%, rgba(255, 255, 255, 0.32) 0 20%, transparent 44%);
-  filter: blur(6px);
-  animation: logoSkyPulse 5.2s ease-in-out infinite;
+    linear-gradient(180deg, rgba(255, 255, 255, 0.78) 0%, rgba(255, 246, 227, 0.3) 60%, transparent 100%),
+    radial-gradient(circle at 26% 20%, rgba(255, 255, 255, 0.96) 0 20%, transparent 42%),
+    radial-gradient(circle at 75% 18%, rgba(255, 255, 255, 0.68) 0 17%, transparent 40%),
+    radial-gradient(circle at 52% 38%, rgba(255, 255, 255, 0.42) 0 21%, transparent 46%);
+  filter: blur(8px);
 }
 
 .logo-sky::after {
   background:
-    radial-gradient(circle at 50% 24%, rgba(255, 255, 255, 0.44) 0 16%, transparent 42%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0.08) 46%, transparent 100%);
-  animation: logoSkyPulseGlow 5.2s ease-in-out infinite;
+    radial-gradient(circle at 50% 24%, rgba(255, 255, 255, 0.66) 0 18%, transparent 44%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.34) 0%, rgba(255, 255, 255, 0.1) 46%, transparent 100%);
+  filter: blur(2px);
 }
 
-@keyframes logoSkyPulse {
+@keyframes logoSkyFade {
   0% {
-    opacity: 0.34;
+    opacity: 0.14;
     transform: scale(0.985);
-    filter: blur(6px) brightness(1);
+    filter: brightness(1);
   }
 
   50% {
-    opacity: 0.74;
-    transform: scale(1.035);
-    filter: blur(7px) brightness(1.18);
+    opacity: 0.92;
+    transform: scale(1.03);
+    filter: brightness(1.35);
   }
 
   100% {
-    opacity: 0.34;
+    opacity: 0.14;
     transform: scale(0.985);
-    filter: blur(6px) brightness(1);
-  }
-}
-
-@keyframes logoSkyPulseGlow {
-  0%,
-  100% {
-    opacity: 0.16;
-  }
-
-  50% {
-    opacity: 0.52;
+    filter: brightness(1);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .logo-sky::before,
-  .logo-sky::after {
+  .logo-sky {
     animation: none;
   }
 }
