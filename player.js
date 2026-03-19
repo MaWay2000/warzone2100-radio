@@ -352,16 +352,44 @@ function persistWrapPosition(left, top) {
   } catch (error) {}
 }
 
-function pinWrapPosition() {
+function pinWrapToCurrentPosition() {
   if (!radioWrap) {
-    return;
+    return null;
   }
 
   const rect = radioWrap.getBoundingClientRect();
   radioWrap.style.left = `${rect.left}px`;
   radioWrap.style.top = `${rect.top}px`;
   radioWrap.style.right = "auto";
-  persistWrapPosition(rect.left, rect.top);
+  return rect;
+}
+
+function keepLogoFixedAfterLayoutChange() {
+  if (!radioWrap || !logoToggle) {
+    return;
+  }
+
+  const logoRectBefore = logoToggle.getBoundingClientRect();
+  const wrapRectBefore = pinWrapToCurrentPosition();
+
+  if (!wrapRectBefore) {
+    return;
+  }
+
+  return function restoreLogoPosition() {
+    const logoRectAfter = logoToggle.getBoundingClientRect();
+    const currentLeft = parseFloat(radioWrap.style.left) || wrapRectBefore.left;
+    const currentTop = parseFloat(radioWrap.style.top) || wrapRectBefore.top;
+    const maxLeft = Math.max(0, window.innerWidth - radioWrap.offsetWidth);
+    const maxTop = Math.max(0, window.innerHeight - radioWrap.offsetHeight);
+    const adjustedLeft = clampNumber(currentLeft + (logoRectBefore.left - logoRectAfter.left), 0, maxLeft);
+    const adjustedTop = clampNumber(currentTop + (logoRectBefore.top - logoRectAfter.top), 0, maxTop);
+
+    radioWrap.style.left = `${adjustedLeft}px`;
+    radioWrap.style.top = `${adjustedTop}px`;
+    radioWrap.style.right = "auto";
+    persistWrapPosition(adjustedLeft, adjustedTop);
+  };
 }
 
 function setPlayerBarVisible(visible) {
@@ -369,8 +397,11 @@ function setPlayerBarVisible(visible) {
     return;
   }
 
-  pinWrapPosition();
+  const restoreLogoPosition = keepLogoFixedAfterLayoutChange();
   radioWrap.classList.toggle("is-player-hidden", !visible);
+  if (restoreLogoPosition) {
+    restoreLogoPosition();
+  }
 
   if (logoToggle) {
     logoToggle.setAttribute("aria-expanded", String(visible));
