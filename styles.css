@@ -112,11 +112,11 @@ body {
 .player {
   position: relative;
   margin-left: 80px;
-  width: min(620px, calc(100vw - 120px));
-  padding: 11px 18px 13px 55px;
+  width: min(560px, calc(100vw - 120px));
+  padding: 10px 16px 12px 50px;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 10px;
+  gap: 8px;
   cursor: grab;
   border-radius: 20px;
   background:
@@ -134,7 +134,7 @@ body {
 .player-main {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   min-width: 0;
 }
 
@@ -174,7 +174,7 @@ body {
   display: grid;
   grid-template-columns: 38px minmax(0, 1fr) 38px;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   padding: 0 4px 0 2px;
 }
 
@@ -547,7 +547,7 @@ body {
 .tube {
   position: relative;
   flex: 1 1 auto;
-  width: 250px;
+  width: 205px;
   height: 36px;
   border-radius: 18px;
   background: linear-gradient(180deg, rgba(26, 34, 44, 0.96) 0%, rgba(8, 12, 18, 0.99) 100%);
@@ -644,7 +644,7 @@ input[type="range"] {
   }
 
   .tube {
-    width: 190px;
+    width: 170px;
   }
 
   .settings-panel {
