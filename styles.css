@@ -15,8 +15,9 @@ body {
 
 .wrap {
   position: fixed;
-  right: 16px;
+  left: 16px;
   top: 16px;
+  right: auto;
   z-index: 9999;
   min-width: 0;
 }

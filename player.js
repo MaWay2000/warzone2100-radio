@@ -989,8 +989,16 @@ document.addEventListener("keydown", unlockAudio);
       wrap.style.left = `${saved.left}px`;
       wrap.style.top = `${saved.top}px`;
       wrap.style.right = "auto";
+    } else {
+      wrap.style.left = "16px";
+      wrap.style.top = "16px";
+      wrap.style.right = "auto";
     }
-  } catch (error) {}
+  } catch (error) {
+    wrap.style.left = "16px";
+    wrap.style.top = "16px";
+    wrap.style.right = "auto";
+  }
 
   function onPointerDown(event) {
     if (event.button !== 0) {
