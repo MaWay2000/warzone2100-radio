@@ -78,7 +78,7 @@ body {
   overflow: hidden;
   pointer-events: none;
   z-index: 2;
-  opacity: 0.14;
+  opacity: 0.1;
   mix-blend-mode: screen;
   animation: logoSkyFade 4.2s ease-in-out infinite;
 }
@@ -109,19 +109,19 @@ body {
 
 @keyframes logoSkyFade {
   0% {
-    opacity: 0.14;
+    opacity: 0.1;
     transform: scale(0.985);
     filter: brightness(1);
   }
 
   50% {
-    opacity: 0.92;
-    transform: scale(1.03);
-    filter: brightness(1.35);
+    opacity: 0.64;
+    transform: scale(1.02);
+    filter: brightness(1.24);
   }
 
   100% {
-    opacity: 0.14;
+    opacity: 0.1;
     transform: scale(0.985);
     filter: brightness(1);
   }
