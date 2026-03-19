@@ -43,11 +43,11 @@ let playing = false;
 let playerInitialized = false;
 let audioUnlocked = false;
 let settingsOpen = false;
-let currentTrackIndex = 0;
+let disabledTrackIds = readStoredDisabledTrackIds();
+let currentTrackIndex = getRandomEnabledTrackIndex();
 let shuffleEnabled = readStoredShuffleState();
 let shuffleOrder = [];
 let shufflePosition = 0;
-let disabledTrackIds = readStoredDisabledTrackIds();
 let logoReactiveLevel = 0;
 
 const eq = document.getElementById("eq");
@@ -146,10 +146,15 @@ function readStoredVolume() {
 
 function readStoredShuffleState() {
   try {
-    return localStorage.getItem(SHUFFLE_STORAGE_KEY) === "true";
+    const stored = localStorage.getItem(SHUFFLE_STORAGE_KEY);
+    if (stored === null) {
+      return true;
+    }
+
+    return stored === "true";
   } catch (error) {}
 
-  return false;
+  return true;
 }
 
 function writeStoredShuffleState(enabled) {
@@ -201,6 +206,15 @@ function isTrackEnabled(index) {
 
 function getEnabledTrackIndexes() {
   return TRACKS.map((_, index) => index).filter((index) => isTrackEnabled(index));
+}
+
+function getRandomEnabledTrackIndex() {
+  const enabledIndexes = getEnabledTrackIndexes();
+  if (!enabledIndexes.length) {
+    return -1;
+  }
+
+  return enabledIndexes[Math.floor(Math.random() * enabledIndexes.length)];
 }
 
 function getFirstEnabledTrackIndex() {
@@ -792,7 +806,7 @@ function initYouTubePlayer() {
 
   playerInitialized = true;
   player = new YT.Player("player", {
-    videoId: TRACKS[0].id,
+    videoId: TRACKS[Math.max(0, currentTrackIndex)].id,
     playerVars: {
       autoplay: 1,
       mute: 1,
