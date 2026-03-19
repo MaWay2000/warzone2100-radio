@@ -746,7 +746,11 @@ document.addEventListener("keydown", unlockAudio);
 
 (function initDragPosition() {
   const wrap = document.getElementById("radioWrap");
+  const DRAG_THRESHOLD = 5;
+  let pointerActive = false;
   let dragging = false;
+  let dragStartedOnLogo = false;
+  let suppressLogoClick = false;
   let startX = 0;
   let startY = 0;
   let startLeft = 0;
@@ -776,32 +780,47 @@ document.addEventListener("keydown", unlockAudio);
       return;
     }
 
-    if (event.target.closest(".btn, .tube, input, .playlist-list, .track-toggle, .settings-close, .shuffle-toggle, .logo-button")) {
+    const startedOnLogo = !!event.target.closest(".logo-button");
+
+    if (event.target.closest(".btn, .tube, input, .playlist-list, .track-toggle, .settings-close, .shuffle-toggle") && !startedOnLogo) {
       return;
     }
 
     const rect = getWrapRect();
-    dragging = true;
+    pointerActive = true;
+    dragging = false;
+    dragStartedOnLogo = startedOnLogo;
+    suppressLogoClick = false;
     startX = event.clientX;
     startY = event.clientY;
     startLeft = rect.left;
     startTop = rect.top;
 
-    wrap.style.right = "auto";
-    wrap.style.left = `${startLeft}px`;
-    wrap.style.top = `${startTop}px`;
-
     document.addEventListener("pointermove", onPointerMove);
     document.addEventListener("pointerup", onPointerUp);
+    document.addEventListener("pointercancel", onPointerUp);
   }
 
   function onPointerMove(event) {
-    if (!dragging) {
+    if (!pointerActive) {
       return;
     }
 
     const dx = event.clientX - startX;
     const dy = event.clientY - startY;
+
+    if (!dragging) {
+      if (Math.hypot(dx, dy) < DRAG_THRESHOLD) {
+        return;
+      }
+
+      dragging = true;
+      suppressLogoClick = dragStartedOnLogo;
+      wrap.style.right = "auto";
+      wrap.style.left = `${startLeft}px`;
+      wrap.style.top = `${startTop}px`;
+    }
+
     const maxLeft = window.innerWidth - wrap.offsetWidth;
     const maxTop = window.innerHeight - wrap.offsetHeight;
     const newLeft = clampNumber(startLeft + dx, 0, Math.max(0, maxLeft));
@@ -812,21 +831,46 @@ document.addEventListener("keydown", unlockAudio);
   }
 
   function onPointerUp() {
-    if (!dragging) {
+    if (!pointerActive) {
       return;
     }
 
+    const shouldClearSuppressedLogoClick = suppressLogoClick;
+
+    if (dragging) {
+      const left = parseFloat(wrap.style.left) || 0;
+      const top = parseFloat(wrap.style.top) || 0;
+      savePosition(left, top);
+    }
+
+    pointerActive = false;
     dragging = false;
-
-    const left = parseFloat(wrap.style.left) || 0;
-    const top = parseFloat(wrap.style.top) || 0;
-    savePosition(left, top);
-
+    dragStartedOnLogo = false;
     document.removeEventListener("pointermove", onPointerMove);
     document.removeEventListener("pointerup", onPointerUp);
+    document.removeEventListener("pointercancel", onPointerUp);
+
+    if (shouldClearSuppressedLogoClick) {
+      window.setTimeout(() => {
+        suppressLogoClick = false;
+      }, 0);
+    }
   }
 
   wrap.addEventListener("pointerdown", onPointerDown);
+
+  if (logoToggle) {
+    logoToggle.addEventListener("click", (event) => {
+      if (suppressLogoClick) {
+        suppressLogoClick = false;
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
+
+      togglePlayerBar();
+    });
+  }
 
   window.addEventListener("resize", () => {
     const rect = getWrapRect();

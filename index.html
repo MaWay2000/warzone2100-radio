@@ -5,7 +5,7 @@
 <title>Warzone Radio</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>
-window.ASSET_VERSION = "20260319-dragrestore1";
+window.ASSET_VERSION = "20260319-logodrag1";
 window.versionedAsset = function(path) {
   return path + "?v=" + window.ASSET_VERSION;
 };
@@ -21,7 +21,7 @@ document.head.appendChild(stylesheet);
 <div id="playerWrap"><div id="player"></div></div>
 
 <div class="wrap drag-hint" id="radioWrap">
- <button class="logo-button" id="logoToggle" type="button" onclick="togglePlayerBar()" aria-label="Show or hide player controls" aria-controls="playerBar settingsPanel" aria-expanded="true">
+ <button class="logo-button" id="logoToggle" type="button" aria-label="Show or hide player controls" aria-controls="playerBar settingsPanel" aria-expanded="true">
   <img data-asset-path="assets/warzone-radio-logo.webp" class="logo" alt="Warzone 2100 Radio logo">
  </button>
  <div class="player" id="playerBar">
