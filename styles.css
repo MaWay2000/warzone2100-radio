@@ -78,7 +78,7 @@ body {
   overflow: hidden;
   pointer-events: none;
   z-index: 2;
-  opacity: 0.5;
+  opacity: 0.34;
   mix-blend-mode: screen;
 }
 
@@ -90,51 +90,51 @@ body {
 }
 
 .logo-sky::before {
-  inset: -10% -55% -30%;
+  inset: -6% -8% -20%;
   background:
-    linear-gradient(180deg, rgba(136, 197, 255, 0.4) 0%, rgba(255, 223, 174, 0.2) 72%, transparent 100%),
-    radial-gradient(circle at 10% 34%, rgba(255, 255, 255, 0.95) 0 7%, transparent 8%),
-    radial-gradient(circle at 19% 44%, rgba(255, 255, 255, 0.66) 0 10%, transparent 11%),
-    radial-gradient(circle at 31% 30%, rgba(255, 255, 255, 0.48) 0 8%, transparent 9%),
-    radial-gradient(circle at 44% 40%, rgba(255, 255, 255, 0.4) 0 11%, transparent 12%),
-    radial-gradient(circle at 59% 29%, rgba(255, 255, 255, 0.34) 0 9%, transparent 10%),
-    radial-gradient(circle at 72% 42%, rgba(255, 255, 255, 0.28) 0 10%, transparent 11%),
-    radial-gradient(circle at 84% 31%, rgba(255, 255, 255, 0.2) 0 7%, transparent 8%);
-  filter: blur(4px);
-  animation: logoSkyDrift 16s linear infinite;
+    linear-gradient(180deg, rgba(255, 255, 255, 0.56) 0%, rgba(255, 244, 221, 0.22) 60%, transparent 100%),
+    radial-gradient(circle at 28% 22%, rgba(255, 255, 255, 0.82) 0 18%, transparent 40%),
+    radial-gradient(circle at 74% 20%, rgba(255, 255, 255, 0.58) 0 15%, transparent 38%),
+    radial-gradient(circle at 52% 38%, rgba(255, 255, 255, 0.32) 0 20%, transparent 44%);
+  filter: blur(6px);
+  animation: logoSkyPulse 5.2s ease-in-out infinite;
 }
 
 .logo-sky::after {
   background:
-    radial-gradient(circle at 72% 25%, rgba(255, 247, 223, 0.26) 0 14%, transparent 32%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.06) 46%, transparent 100%);
-  animation: logoSkyGlow 6.4s ease-in-out infinite;
+    radial-gradient(circle at 50% 24%, rgba(255, 255, 255, 0.44) 0 16%, transparent 42%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0.08) 46%, transparent 100%);
+  animation: logoSkyPulseGlow 5.2s ease-in-out infinite;
 }
 
-@keyframes logoSkyDrift {
+@keyframes logoSkyPulse {
   0% {
-    transform: translateX(-18%) translateY(0) scale(1.02);
+    opacity: 0.34;
+    transform: scale(0.985);
+    filter: blur(6px) brightness(1);
   }
 
   50% {
-    transform: translateX(6%) translateY(-1.5%) scale(1.04);
+    opacity: 0.74;
+    transform: scale(1.035);
+    filter: blur(7px) brightness(1.18);
   }
 
   100% {
-    transform: translateX(24%) translateY(1%) scale(1.02);
+    opacity: 0.34;
+    transform: scale(0.985);
+    filter: blur(6px) brightness(1);
   }
 }
 
-@keyframes logoSkyGlow {
+@keyframes logoSkyPulseGlow {
   0%,
   100% {
-    opacity: 0.45;
-    transform: translateX(-2%);
+    opacity: 0.16;
   }
 
   50% {
-    opacity: 0.78;
-    transform: translateX(2%);
+    opacity: 0.52;
   }
 }
 
