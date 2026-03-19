@@ -772,7 +772,11 @@ document.addEventListener("keydown", unlockAudio);
   } catch (error) {}
 
   function onPointerDown(event) {
-    if (event.target.closest(".btn, .tube, input, button, .settings-panel")) {
+    if (event.button !== 0) {
+      return;
+    }
+
+    if (event.target.closest(".btn, .tube, input, .playlist-list, .track-toggle, .settings-close, .shuffle-toggle, .logo-button")) {
       return;
     }
 

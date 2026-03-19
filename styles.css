@@ -67,6 +67,7 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
+  cursor: move;
   border-radius: 20px;
   background:
     radial-gradient(circle at 50% -20%, rgba(120, 180, 255, 0.18), transparent 45%),
@@ -161,6 +162,7 @@ body {
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 10px;
+  cursor: move;
 }
 
 .settings-kicker {
