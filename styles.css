@@ -45,9 +45,8 @@ body {
   z-index: 3;
   overflow: visible;
   isolation: isolate;
-  --logo-sky-min-opacity: 0.05;
-  --logo-sky-peak-opacity: 0.35;
-  --logo-sky-peak-brightness: 1.11;
+  --logo-sky-opacity: 0.08;
+  --logo-sky-brightness: 1.1;
 }
 
 .logo-button:active {
@@ -81,9 +80,9 @@ body {
   overflow: hidden;
   pointer-events: none;
   z-index: 2;
-  opacity: var(--logo-sky-min-opacity);
+  opacity: var(--logo-sky-opacity);
+  filter: brightness(var(--logo-sky-brightness));
   mix-blend-mode: screen;
-  animation: logoSkyFade 4.2s ease-in-out infinite;
 }
 
 .logo-sky::before,
@@ -108,32 +107,6 @@ body {
     radial-gradient(circle at 50% 24%, rgba(255, 255, 255, 0.66) 0 18%, transparent 44%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.34) 0%, rgba(255, 255, 255, 0.1) 46%, transparent 100%);
   filter: blur(2px);
-}
-
-@keyframes logoSkyFade {
-  0% {
-    opacity: var(--logo-sky-min-opacity);
-    transform: scale(0.985);
-    filter: brightness(1);
-  }
-
-  50% {
-    opacity: var(--logo-sky-peak-opacity);
-    transform: scale(1.02);
-    filter: brightness(var(--logo-sky-peak-brightness));
-  }
-
-  100% {
-    opacity: var(--logo-sky-min-opacity);
-    transform: scale(0.985);
-    filter: brightness(1);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .logo-sky {
-    animation: none;
-  }
 }
 
 .player {

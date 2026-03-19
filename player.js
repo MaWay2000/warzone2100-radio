@@ -469,13 +469,11 @@ function updateLogoSkyIntensity(nextValue) {
   }
 
   const level = clampNumber(nextValue, 0, 100) / 100;
-  const minOpacity = 0.03 + level * 0.07;
-  const peakOpacity = 0.22 + level * 0.42;
-  const peakBrightness = 1.06 + level * 0.18;
+  const opacity = 0.03 + level * 0.22;
+  const brightness = 1.02 + level * 0.2;
 
-  logoToggle.style.setProperty("--logo-sky-min-opacity", minOpacity.toFixed(3));
-  logoToggle.style.setProperty("--logo-sky-peak-opacity", peakOpacity.toFixed(3));
-  logoToggle.style.setProperty("--logo-sky-peak-brightness", peakBrightness.toFixed(3));
+  logoToggle.style.setProperty("--logo-sky-opacity", opacity.toFixed(3));
+  logoToggle.style.setProperty("--logo-sky-brightness", brightness.toFixed(3));
 }
 
 function setVol(nextValue) {
