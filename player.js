@@ -48,7 +48,7 @@ let currentTrackIndex = getRandomEnabledTrackIndex();
 let shuffleEnabled = readStoredShuffleState();
 let shuffleOrder = [];
 let shufflePosition = 0;
-let logoReactiveLevel = 0;
+let logoPulseTimeoutId = 0;
 
 const eq = document.getElementById("eq");
 const cover = document.getElementById("cover");
@@ -584,42 +584,74 @@ function updateTimebar() {
 
 function animateBars() {
   const bars = document.querySelectorAll(".bar");
-  let totalMotion = 0;
 
   bars.forEach((bar, index) => {
     const base = BAR_PATTERN[index % BAR_PATTERN.length];
     const motion = playing ? ((Math.sin(Date.now() / 180 + index * 0.75) + 1) * 7 + Math.random() * 4) : 0;
-    totalMotion += motion;
 
     bar.style.height = `${Math.min(96, Math.max(22, base + motion))}%`;
     bar.style.opacity = playing ? "1" : "0.45";
   });
 
-  const barsCount = bars.length || 1;
-  const targetReactiveLevel = playing ? clampNumber(totalMotion / (barsCount * 18), 0, 1) : 0;
-  logoReactiveLevel = logoReactiveLevel * 0.72 + targetReactiveLevel * 0.28;
-  updateLogoSkyIntensity(parseInt(vol.value, 10) || 0, logoReactiveLevel);
   updateTimebar();
 }
 
-function updateLogoSkyIntensity(nextValue, reactiveLevel = logoReactiveLevel) {
+function updateLogoSkyIntensity(nextValue, transitionMs = 0) {
   if (!logoToggle) {
     return;
   }
 
   const level = clampNumber(nextValue, 0, 100) / 100;
-  const activity = clampNumber(reactiveLevel, 0, 1);
-  const opacity = 0.03 + level * 0.14 + activity * 0.36;
-  const brightness = 1.02 + level * 0.12 + activity * 0.44;
+  const opacity = 0.01 + level * 0.62;
+  const brightness = 1 + level * 0.48;
 
+  logoToggle.style.setProperty("--logo-sky-transition", `${Math.max(0, Math.round(transitionMs))}ms`);
   logoToggle.style.setProperty("--logo-sky-opacity", opacity.toFixed(3));
   logoToggle.style.setProperty("--logo-sky-brightness", brightness.toFixed(3));
+}
+
+function getRandomLogoPulseDuration() {
+  return (Math.floor(Math.random() * 10) + 1) * 200;
+}
+
+function getRandomLogoPulsePercent() {
+  if (Math.random() < 0.75) {
+    return Math.floor(Math.random() * 101);
+  }
+
+  return 100;
+}
+
+function startRandomLogoPulseLoop() {
+  if (!logoToggle) {
+    return;
+  }
+
+  if (logoPulseTimeoutId) {
+    window.clearTimeout(logoPulseTimeoutId);
+    logoPulseTimeoutId = 0;
+  }
+
+  updateLogoSkyIntensity(0, 0);
+
+  function scheduleNextPulse() {
+    const peakPercent = getRandomLogoPulsePercent();
+    const fadeInDuration = getRandomLogoPulseDuration();
+    const fadeOutDuration = getRandomLogoPulseDuration();
+
+    updateLogoSkyIntensity(peakPercent, fadeInDuration);
+    logoPulseTimeoutId = window.setTimeout(() => {
+      updateLogoSkyIntensity(0, fadeOutDuration);
+      logoPulseTimeoutId = window.setTimeout(scheduleNextPulse, fadeOutDuration);
+    }, fadeInDuration);
+  }
+
+  scheduleNextPulse();
 }
 
 function refreshVolumeVisuals() {
   const value = clampNumber(parseInt(vol.value, 10) || 0, 0, 100);
   syncEq(value);
-  updateLogoSkyIntensity(value);
   animateBars();
 }
 
@@ -1192,6 +1224,7 @@ vol.value = String(readStoredVolume());
 setVol(vol.value);
 animateBars();
 updateTimebar();
+startRandomLogoPulseLoop();
 setInterval(animateBars, 120);
 window.addEventListener("resize", () => syncEq(parseInt(vol.value, 10) || 0));
 window.toggleSettingsPanel = toggleSettingsPanel;

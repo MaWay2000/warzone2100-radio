@@ -48,6 +48,7 @@ body {
   isolation: isolate;
   --logo-sky-opacity: 0.08;
   --logo-sky-brightness: 1.1;
+  --logo-sky-transition: 900ms;
 }
 
 .logo-button:active {
@@ -84,6 +85,9 @@ body {
   opacity: var(--logo-sky-opacity);
   filter: brightness(var(--logo-sky-brightness));
   mix-blend-mode: screen;
+  transition:
+    opacity var(--logo-sky-transition) ease-in-out,
+    filter var(--logo-sky-transition) ease-in-out;
 }
 
 .logo-sky::before,
