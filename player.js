@@ -463,11 +463,27 @@ function animateBars() {
   });
 }
 
+function updateLogoSkyIntensity(nextValue) {
+  if (!logoToggle) {
+    return;
+  }
+
+  const level = clampNumber(nextValue, 0, 100) / 100;
+  const minOpacity = 0.03 + level * 0.07;
+  const peakOpacity = 0.22 + level * 0.42;
+  const peakBrightness = 1.06 + level * 0.18;
+
+  logoToggle.style.setProperty("--logo-sky-min-opacity", minOpacity.toFixed(3));
+  logoToggle.style.setProperty("--logo-sky-peak-opacity", peakOpacity.toFixed(3));
+  logoToggle.style.setProperty("--logo-sky-peak-brightness", peakBrightness.toFixed(3));
+}
+
 function setVol(nextValue) {
   const value = clampNumber(parseInt(nextValue, 10) || 0, 0, 100);
 
   vol.value = String(value);
   syncEq(value);
+  updateLogoSkyIntensity(value);
   writeStoredVolume(value);
 
   if (hasPlayerMethod("setVolume")) {
