@@ -407,6 +407,14 @@ function setPlayerBarVisible(visible) {
     logoToggle.setAttribute("aria-expanded", String(visible));
   }
 
+  if (visible) {
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        refreshVolumeVisuals();
+      });
+    });
+  }
+
   if (!visible && settingsOpen) {
     closeSettingsPanel();
   }
@@ -476,12 +484,18 @@ function updateLogoSkyIntensity(nextValue) {
   logoToggle.style.setProperty("--logo-sky-brightness", brightness.toFixed(3));
 }
 
+function refreshVolumeVisuals() {
+  const value = clampNumber(parseInt(vol.value, 10) || 0, 0, 100);
+  syncEq(value);
+  updateLogoSkyIntensity(value);
+  animateBars();
+}
+
 function setVol(nextValue) {
   const value = clampNumber(parseInt(nextValue, 10) || 0, 0, 100);
 
   vol.value = String(value);
-  syncEq(value);
-  updateLogoSkyIntensity(value);
+  refreshVolumeVisuals();
   writeStoredVolume(value);
 
   if (hasPlayerMethod("setVolume")) {
