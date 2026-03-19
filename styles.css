@@ -43,6 +43,8 @@ body {
   background: transparent;
   cursor: grab;
   z-index: 3;
+  overflow: visible;
+  isolation: isolate;
 }
 
 .logo-button:active {
@@ -61,7 +63,86 @@ body {
   height: 100%;
   object-fit: contain;
   pointer-events: none;
+  position: relative;
+  z-index: 1;
   filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.4));
+}
+
+.logo-sky {
+  position: absolute;
+  left: 18px;
+  top: 12px;
+  width: 114px;
+  height: 80px;
+  border-radius: 50% 50% 46% 46% / 58% 58% 42% 42%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.5;
+  mix-blend-mode: screen;
+}
+
+.logo-sky::before,
+.logo-sky::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.logo-sky::before {
+  inset: -10% -55% -30%;
+  background:
+    linear-gradient(180deg, rgba(136, 197, 255, 0.4) 0%, rgba(255, 223, 174, 0.2) 72%, transparent 100%),
+    radial-gradient(circle at 10% 34%, rgba(255, 255, 255, 0.95) 0 7%, transparent 8%),
+    radial-gradient(circle at 19% 44%, rgba(255, 255, 255, 0.66) 0 10%, transparent 11%),
+    radial-gradient(circle at 31% 30%, rgba(255, 255, 255, 0.48) 0 8%, transparent 9%),
+    radial-gradient(circle at 44% 40%, rgba(255, 255, 255, 0.4) 0 11%, transparent 12%),
+    radial-gradient(circle at 59% 29%, rgba(255, 255, 255, 0.34) 0 9%, transparent 10%),
+    radial-gradient(circle at 72% 42%, rgba(255, 255, 255, 0.28) 0 10%, transparent 11%),
+    radial-gradient(circle at 84% 31%, rgba(255, 255, 255, 0.2) 0 7%, transparent 8%);
+  filter: blur(4px);
+  animation: logoSkyDrift 16s linear infinite;
+}
+
+.logo-sky::after {
+  background:
+    radial-gradient(circle at 72% 25%, rgba(255, 247, 223, 0.26) 0 14%, transparent 32%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.06) 46%, transparent 100%);
+  animation: logoSkyGlow 6.4s ease-in-out infinite;
+}
+
+@keyframes logoSkyDrift {
+  0% {
+    transform: translateX(-18%) translateY(0) scale(1.02);
+  }
+
+  50% {
+    transform: translateX(6%) translateY(-1.5%) scale(1.04);
+  }
+
+  100% {
+    transform: translateX(24%) translateY(1%) scale(1.02);
+  }
+}
+
+@keyframes logoSkyGlow {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: translateX(-2%);
+  }
+
+  50% {
+    opacity: 0.78;
+    transform: translateX(2%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-sky::before,
+  .logo-sky::after {
+    animation: none;
+  }
 }
 
 .player {
