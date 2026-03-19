@@ -486,8 +486,8 @@ function updateLogoSkyIntensity(nextValue, reactiveLevel = logoReactiveLevel) {
 
   const level = clampNumber(nextValue, 0, 100) / 100;
   const activity = clampNumber(reactiveLevel, 0, 1);
-  const opacity = 0.03 + level * 0.14 + activity * 0.18;
-  const brightness = 1.02 + level * 0.12 + activity * 0.22;
+  const opacity = 0.03 + level * 0.14 + activity * 0.36;
+  const brightness = 1.02 + level * 0.12 + activity * 0.44;
 
   logoToggle.style.setProperty("--logo-sky-opacity", opacity.toFixed(3));
   logoToggle.style.setProperty("--logo-sky-brightness", brightness.toFixed(3));
