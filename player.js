@@ -97,6 +97,19 @@ function formatPlaybackTime(seconds) {
   return `${minutes}:${String(remainingSeconds).padStart(2, "0")}`;
 }
 
+function parsePlaybackTime(value) {
+  if (typeof value !== "string" || !value.trim()) {
+    return 0;
+  }
+
+  const parts = value.split(":").map((part) => parseInt(part, 10));
+  if (parts.some((part) => !Number.isFinite(part) || part < 0)) {
+    return 0;
+  }
+
+  return parts.reduce((total, part) => total * 60 + part, 0);
+}
+
 function hasPlayerMethod(methodName) {
   return !!player && typeof player[methodName] === "function";
 }
@@ -478,19 +491,20 @@ function syncEq(value) {
   buildBars();
 }
 
-function updateTimebar() {
-  if (!timebar || !timebarFill || !timebarHead || !timeCurrent || !timeDuration) {
-    return;
+function getPlaybackCurrentSeconds() {
+  if (currentTrackIndex < 0 || !hasPlayerMethod("getCurrentTime")) {
+    return 0;
   }
 
-  let current = 0;
+  try {
+    return Math.max(0, player.getCurrentTime() || 0);
+  } catch (error) {}
+
+  return 0;
+}
+
+function getPlaybackDurationSeconds() {
   let duration = 0;
-
-  if (currentTrackIndex >= 0 && hasPlayerMethod("getCurrentTime")) {
-    try {
-      current = player.getCurrentTime() || 0;
-    } catch (error) {}
-  }
 
   if (currentTrackIndex >= 0 && hasPlayerMethod("getDuration")) {
     try {
@@ -498,6 +512,49 @@ function updateTimebar() {
     } catch (error) {}
   }
 
+  if (duration > 0) {
+    return duration;
+  }
+
+  return currentTrackIndex >= 0 ? parsePlaybackTime(TRACKS[currentTrackIndex].length) : 0;
+}
+
+function seekToProgress(progress) {
+  if (currentTrackIndex < 0 || !hasPlayerMethod("seekTo")) {
+    return;
+  }
+
+  const duration = getPlaybackDurationSeconds();
+  if (duration <= 0) {
+    return;
+  }
+
+  try {
+    player.seekTo(clampNumber(progress, 0, 1) * duration, true);
+  } catch (error) {
+    return;
+  }
+
+  updateTimebar();
+}
+
+function seekFromClientX(clientX) {
+  if (!timebar) {
+    return;
+  }
+
+  const rect = timebar.getBoundingClientRect();
+  const progress = rect.width > 0 ? clampNumber((clientX - rect.left) / rect.width, 0, 1) : 0;
+  seekToProgress(progress);
+}
+
+function updateTimebar() {
+  if (!timebar || !timebarFill || !timebarHead || !timeCurrent || !timeDuration) {
+    return;
+  }
+
+  const current = getPlaybackCurrentSeconds();
+  const duration = getPlaybackDurationSeconds();
   const fallbackDuration = currentTrackIndex >= 0 ? TRACKS[currentTrackIndex].length : "0:00";
   const progress = duration > 0 ? clampNumber(current / duration, 0, 1) : 0;
   const progressPercent = progress * 100;
@@ -928,7 +985,7 @@ document.addEventListener("keydown", unlockAudio);
 
     const startedOnLogo = !!event.target.closest(".logo-button");
 
-    if (event.target.closest(".btn, .tube, input, .playlist-list, .track-toggle, .settings-close, .shuffle-toggle") && !startedOnLogo) {
+    if (event.target.closest(".btn, .tube, .timebar, .timebar-row, .time-label, input, .playlist-list, .track-toggle, .settings-close, .shuffle-toggle") && !startedOnLogo) {
       return;
     }
 
@@ -1028,6 +1085,83 @@ document.addEventListener("keydown", unlockAudio);
     wrap.style.top = `${top}px`;
     wrap.style.right = "auto";
     savePosition(left, top);
+  });
+}());
+
+(function initTimebarSeeking() {
+  if (!timebar) {
+    return;
+  }
+
+  let seeking = false;
+
+  function onSeekPointerMove(event) {
+    if (!seeking) {
+      return;
+    }
+
+    seekFromClientX(event.clientX);
+  }
+
+  function stopSeeking(event) {
+    if (!seeking) {
+      return;
+    }
+
+    if (event) {
+      seekFromClientX(event.clientX);
+    }
+
+    seeking = false;
+    document.removeEventListener("pointermove", onSeekPointerMove);
+    document.removeEventListener("pointerup", stopSeeking);
+    document.removeEventListener("pointercancel", stopSeeking);
+  }
+
+  timebar.addEventListener("pointerdown", (event) => {
+    if (event.button !== 0) {
+      return;
+    }
+
+    unlockAudio();
+    event.preventDefault();
+    event.stopPropagation();
+    seeking = true;
+    seekFromClientX(event.clientX);
+    document.addEventListener("pointermove", onSeekPointerMove);
+    document.addEventListener("pointerup", stopSeeking);
+    document.addEventListener("pointercancel", stopSeeking);
+  });
+
+  timebar.addEventListener("keydown", (event) => {
+    if (currentTrackIndex < 0) {
+      return;
+    }
+
+    const duration = getPlaybackDurationSeconds();
+    if (duration <= 0 || !hasPlayerMethod("seekTo")) {
+      return;
+    }
+
+    const current = getPlaybackCurrentSeconds();
+    let nextTime = current;
+
+    if (event.key === "ArrowLeft" || event.key === "ArrowDown") {
+      nextTime = current - 5;
+    } else if (event.key === "ArrowRight" || event.key === "ArrowUp") {
+      nextTime = current + 5;
+    } else if (event.key === "Home") {
+      nextTime = 0;
+    } else if (event.key === "End") {
+      nextTime = duration;
+    } else {
+      return;
+    }
+
+    unlockAudio();
+    event.preventDefault();
+    event.stopPropagation();
+    seekToProgress(clampNumber(nextTime / duration, 0, 1));
   });
 }());
 

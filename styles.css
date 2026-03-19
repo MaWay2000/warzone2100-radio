@@ -197,6 +197,7 @@ body {
     inset 0 2px 6px rgba(0, 0, 0, 0.45),
     inset 0 -1px 0 rgba(255, 255, 255, 0.03),
     0 0 10px rgba(0, 190, 255, 0.04);
+  cursor: pointer;
 }
 
 .timebar-fill {
@@ -227,6 +228,11 @@ body {
     inset 0 1px 0 rgba(255, 255, 255, 0.45);
   opacity: 0;
   transition: opacity 120ms ease;
+}
+
+.timebar:focus-visible {
+  outline: 2px solid rgba(92, 216, 255, 0.9);
+  outline-offset: 4px;
 }
 
 .settings-btn {

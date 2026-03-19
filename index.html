@@ -5,7 +5,7 @@
 <title>Warzone Radio</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>
-window.ASSET_VERSION = "20260319-timebar1";
+window.ASSET_VERSION = "20260319-timebarseek1";
 window.versionedAsset = function(path) {
   return path + "?v=" + window.ASSET_VERSION;
 };
@@ -55,7 +55,7 @@ document.head.appendChild(stylesheet);
 
   <div class="timebar-row">
    <span class="time-label" id="timeCurrent">0:00</span>
-   <div class="timebar" id="timebar" role="progressbar" aria-label="Track progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+   <div class="timebar" id="timebar" role="slider" tabindex="0" aria-label="Track progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
     <div class="timebar-fill" id="timebarFill"></div>
     <div class="timebar-head" id="timebarHead"></div>
    </div>
