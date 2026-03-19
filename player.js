@@ -48,6 +48,7 @@ let shuffleEnabled = readStoredShuffleState();
 let shuffleOrder = [];
 let shufflePosition = 0;
 let disabledTrackIds = readStoredDisabledTrackIds();
+let logoReactiveLevel = 0;
 
 const eq = document.getElementById("eq");
 const cover = document.getElementById("cover");
@@ -461,24 +462,32 @@ function syncEq(value) {
 
 function animateBars() {
   const bars = document.querySelectorAll(".bar");
+  let totalMotion = 0;
 
   bars.forEach((bar, index) => {
     const base = BAR_PATTERN[index % BAR_PATTERN.length];
     const motion = playing ? ((Math.sin(Date.now() / 180 + index * 0.75) + 1) * 7 + Math.random() * 4) : 0;
+    totalMotion += motion;
 
     bar.style.height = `${Math.min(96, Math.max(22, base + motion))}%`;
     bar.style.opacity = playing ? "1" : "0.45";
   });
+
+  const barsCount = bars.length || 1;
+  const targetReactiveLevel = playing ? clampNumber(totalMotion / (barsCount * 18), 0, 1) : 0;
+  logoReactiveLevel = logoReactiveLevel * 0.72 + targetReactiveLevel * 0.28;
+  updateLogoSkyIntensity(parseInt(vol.value, 10) || 0, logoReactiveLevel);
 }
 
-function updateLogoSkyIntensity(nextValue) {
+function updateLogoSkyIntensity(nextValue, reactiveLevel = logoReactiveLevel) {
   if (!logoToggle) {
     return;
   }
 
   const level = clampNumber(nextValue, 0, 100) / 100;
-  const opacity = 0.03 + level * 0.22;
-  const brightness = 1.02 + level * 0.2;
+  const activity = clampNumber(reactiveLevel, 0, 1);
+  const opacity = 0.03 + level * 0.14 + activity * 0.18;
+  const brightness = 1.02 + level * 0.12 + activity * 0.22;
 
   logoToggle.style.setProperty("--logo-sky-opacity", opacity.toFixed(3));
   logoToggle.style.setProperty("--logo-sky-brightness", brightness.toFixed(3));
