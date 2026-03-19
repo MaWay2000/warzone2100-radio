@@ -112,9 +112,10 @@ body {
 .player {
   position: relative;
   margin-left: 80px;
-  padding: 10px 16px 10px 55px;
-  display: flex;
-  align-items: center;
+  width: min(620px, calc(100vw - 120px));
+  padding: 11px 18px 13px 55px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 10px;
   cursor: grab;
   border-radius: 20px;
@@ -128,6 +129,13 @@ body {
     inset 0 0 0 1px rgba(255, 255, 255, 0.03),
     0 12px 26px rgba(0, 0, 0, 0.45),
     0 2px 0 rgba(255, 255, 255, 0.04);
+}
+
+.player-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
 }
 
 .btn {
@@ -160,6 +168,65 @@ body {
   width: 12px;
   height: 12px;
   fill: #fff;
+}
+
+.timebar-row {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) 38px;
+  align-items: center;
+  gap: 10px;
+  padding: 0 4px 0 2px;
+}
+
+.time-label {
+  color: rgba(177, 224, 255, 0.72);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.timebar {
+  position: relative;
+  height: 8px;
+  border-radius: 999px;
+  overflow: visible;
+  background: linear-gradient(180deg, rgba(19, 29, 41, 0.96) 0%, rgba(8, 13, 20, 0.99) 100%);
+  border: 1px solid rgba(120, 171, 211, 0.22);
+  box-shadow:
+    inset 0 2px 6px rgba(0, 0, 0, 0.45),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.03),
+    0 0 10px rgba(0, 190, 255, 0.04);
+}
+
+.timebar-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(180deg, rgba(153, 245, 255, 0.75) 0%, rgba(29, 198, 255, 0.9) 55%, rgba(0, 111, 173, 0.95) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 0 12px rgba(0, 200, 255, 0.2);
+}
+
+.timebar-head {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle at 35% 35%, #f4feff 0%, #7ff2ff 48%, #00b9ff 100%);
+  box-shadow:
+    0 0 12px rgba(0, 220, 255, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  opacity: 0;
+  transition: opacity 120ms ease;
 }
 
 .settings-btn {
@@ -473,7 +540,8 @@ body {
 
 .tube {
   position: relative;
-  width: 180px;
+  flex: 1 1 auto;
+  width: 250px;
   height: 36px;
   border-radius: 18px;
   background: linear-gradient(180deg, rgba(26, 34, 44, 0.96) 0%, rgba(8, 12, 18, 0.99) 100%);
@@ -554,6 +622,25 @@ input[type="range"] {
 }
 
 @media (max-width: 640px) {
+  .player {
+    width: min(420px, calc(100vw - 24px));
+    padding: 10px 14px 12px 48px;
+    gap: 8px;
+  }
+
+  .player-main {
+    gap: 8px;
+  }
+
+  .timebar-row {
+    grid-template-columns: 34px minmax(0, 1fr) 34px;
+    gap: 8px;
+  }
+
+  .tube {
+    width: 190px;
+  }
+
   .settings-panel {
     right: 8px;
     width: min(360px, calc(100vw - 24px));

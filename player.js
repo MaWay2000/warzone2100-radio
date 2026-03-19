@@ -62,6 +62,11 @@ const settingsTitle = document.getElementById("settingsTitle");
 const shuffleToggle = document.getElementById("shuffleToggle");
 const shuffleToggleLabel = document.getElementById("shuffleToggleLabel");
 const playlistList = document.getElementById("playlistList");
+const timebar = document.getElementById("timebar");
+const timebarFill = document.getElementById("timebarFill");
+const timebarHead = document.getElementById("timebarHead");
+const timeCurrent = document.getElementById("timeCurrent");
+const timeDuration = document.getElementById("timeDuration");
 const versionedAsset = window.versionedAsset || ((path) => path);
 const logo = document.querySelector(".logo");
 const logoToggle = document.getElementById("logoToggle");
@@ -77,6 +82,19 @@ if (logo && logo.dataset.assetPath) {
 
 function clampNumber(value, min, max) {
   return Math.max(min, Math.min(max, value));
+}
+
+function formatPlaybackTime(seconds) {
+  const wholeSeconds = Math.max(0, Math.floor(seconds || 0));
+  const hours = Math.floor(wholeSeconds / 3600);
+  const minutes = Math.floor((wholeSeconds % 3600) / 60);
+  const remainingSeconds = wholeSeconds % 60;
+
+  if (hours > 0) {
+    return `${hours}:${String(minutes).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`;
+  }
+
+  return `${minutes}:${String(remainingSeconds).padStart(2, "0")}`;
 }
 
 function hasPlayerMethod(methodName) {
@@ -460,6 +478,39 @@ function syncEq(value) {
   buildBars();
 }
 
+function updateTimebar() {
+  if (!timebar || !timebarFill || !timebarHead || !timeCurrent || !timeDuration) {
+    return;
+  }
+
+  let current = 0;
+  let duration = 0;
+
+  if (currentTrackIndex >= 0 && hasPlayerMethod("getCurrentTime")) {
+    try {
+      current = player.getCurrentTime() || 0;
+    } catch (error) {}
+  }
+
+  if (currentTrackIndex >= 0 && hasPlayerMethod("getDuration")) {
+    try {
+      duration = player.getDuration() || 0;
+    } catch (error) {}
+  }
+
+  const fallbackDuration = currentTrackIndex >= 0 ? TRACKS[currentTrackIndex].length : "0:00";
+  const progress = duration > 0 ? clampNumber(current / duration, 0, 1) : 0;
+  const progressPercent = progress * 100;
+
+  timeCurrent.textContent = formatPlaybackTime(current);
+  timeDuration.textContent = duration > 0 ? formatPlaybackTime(duration) : fallbackDuration;
+  timebarFill.style.width = `${progressPercent}%`;
+  timebarHead.style.left = `${progressPercent}%`;
+  timebarHead.style.opacity = progress > 0 ? "1" : "0";
+  timebar.setAttribute("aria-valuenow", String(Math.round(progressPercent)));
+  timebar.setAttribute("aria-valuetext", `${timeCurrent.textContent} of ${timeDuration.textContent}`);
+}
+
 function animateBars() {
   const bars = document.querySelectorAll(".bar");
   let totalMotion = 0;
@@ -477,6 +528,7 @@ function animateBars() {
   const targetReactiveLevel = playing ? clampNumber(totalMotion / (barsCount * 18), 0, 1) : 0;
   logoReactiveLevel = logoReactiveLevel * 0.72 + targetReactiveLevel * 0.28;
   updateLogoSkyIntensity(parseInt(vol.value, 10) || 0, logoReactiveLevel);
+  updateTimebar();
 }
 
 function updateLogoSkyIntensity(nextValue, reactiveLevel = logoReactiveLevel) {
@@ -521,6 +573,7 @@ function stopPlayback() {
 
   playing = false;
   updateIcon();
+  updateTimebar();
 }
 
 function cueTrack(index, options = {}) {
@@ -548,6 +601,7 @@ function cueTrack(index, options = {}) {
   playing = false;
   updateIcon();
   syncPlaylistSelection();
+  updateTimebar();
   return true;
 }
 
@@ -585,6 +639,7 @@ function loadTrack(index, options = {}) {
   playing = true;
   updateIcon();
   syncPlaylistSelection();
+  updateTimebar();
   return true;
 }
 
@@ -692,24 +747,28 @@ function initYouTubePlayer() {
       onReady: () => {
         setVol(vol.value);
         loadTrack(currentTrackIndex);
+        updateTimebar();
       },
       onStateChange: (event) => {
         if (event.data === YT.PlayerState.PLAYING) {
           playing = true;
           updateIcon();
           syncPlaylistSelection();
+          updateTimebar();
         }
 
         if (event.data === YT.PlayerState.PAUSED) {
           playing = false;
           updateIcon();
           syncPlaylistSelection();
+          updateTimebar();
         }
 
         if (event.data === YT.PlayerState.ENDED) {
           playing = false;
           updateIcon();
           syncPlaylistSelection();
+          updateTimebar();
           nextTrack();
         }
       }
@@ -976,6 +1035,7 @@ renderPlaylist();
 vol.value = String(readStoredVolume());
 setVol(vol.value);
 animateBars();
+updateTimebar();
 setInterval(animateBars, 120);
 window.addEventListener("resize", () => syncEq(parseInt(vol.value, 10) || 0));
 window.toggleSettingsPanel = toggleSettingsPanel;

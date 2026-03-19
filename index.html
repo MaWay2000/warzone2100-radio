@@ -5,7 +5,7 @@
 <title>Warzone Radio</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>
-window.ASSET_VERSION = "20260319-logoplayreactive2";
+window.ASSET_VERSION = "20260319-timebar1";
 window.versionedAsset = function(path) {
   return path + "?v=" + window.ASSET_VERSION;
 };
@@ -26,29 +26,40 @@ document.head.appendChild(stylesheet);
   <span class="logo-sky" aria-hidden="true"></span>
  </button>
  <div class="player" id="playerBar">
-  <div class="btn" onclick="nextTrack()" title="Next">
-   <svg viewBox="0 0 24 24"><polygon points="5,4 15,12 5,20"/><rect x="16" y="4" width="3" height="16"/></svg>
+  <div class="player-main">
+   <div class="btn" onclick="nextTrack()" title="Next">
+    <svg viewBox="0 0 24 24"><polygon points="5,4 15,12 5,20"/><rect x="16" y="4" width="3" height="16"/></svg>
+   </div>
+
+   <div class="btn" onclick="playPause()" id="pp" title="Play/Pause">
+    <svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg>
+   </div>
+
+   <div class="tube">
+    <div class="eqGlow" id="eqGlow"></div>
+    <div class="eq" id="eq"></div>
+    <div class="cover" id="cover"></div>
+    <input id="vol" type="range" min="0" max="100" value="30" oninput="setVol(this.value)">
+   </div>
+
+   <div class="btn" onclick="prevTrack()" title="Previous">
+    <svg viewBox="0 0 24 24"><polygon points="19,4 9,12 19,20"/><rect x="5" y="4" width="3" height="16"/></svg>
+   </div>
+
+   <div class="btn settings-btn" id="settingsButton" onclick="toggleSettingsPanel()" title="Playlist">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+     <path d="M19.14 12.94c.04-.31.06-.62.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.61-.22l-2.39.96a7.05 7.05 0 0 0-1.63-.94l-.36-2.54a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.5.42l-.36 2.54c-.58.22-1.12.53-1.63.94l-2.39-.96a.5.5 0 0 0-.61.22L2.71 8.84a.5.5 0 0 0 .12.64l2.03 1.58c-.04.31-.06.62-.06.94s.02.63.06.94L2.83 14.52a.5.5 0 0 0-.12.64l1.92 3.32a.5.5 0 0 0 .61.22l2.39-.96c.5.41 1.05.72 1.63.94l.36 2.54a.5.5 0 0 0 .5.42h3.84a.5.5 0 0 0 .5-.42l.36-2.54c.58-.22 1.12-.53 1.63-.94l2.39.96a.5.5 0 0 0 .61-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58ZM12 15.2A3.2 3.2 0 1 1 12 8.8a3.2 3.2 0 0 1 0 6.4Z"/>
+    </svg>
+   </div>
   </div>
 
-  <div class="btn" onclick="playPause()" id="pp" title="Play/Pause">
-   <svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg>
-  </div>
-
-  <div class="tube">
-   <div class="eqGlow" id="eqGlow"></div>
-   <div class="eq" id="eq"></div>
-   <div class="cover" id="cover"></div>
-   <input id="vol" type="range" min="0" max="100" value="30" oninput="setVol(this.value)">
-  </div>
-
-  <div class="btn" onclick="prevTrack()" title="Previous">
-   <svg viewBox="0 0 24 24"><polygon points="19,4 9,12 19,20"/><rect x="5" y="4" width="3" height="16"/></svg>
-  </div>
-
-  <div class="btn settings-btn" id="settingsButton" onclick="toggleSettingsPanel()" title="Playlist">
-   <svg viewBox="0 0 24 24" aria-hidden="true">
-    <path d="M19.14 12.94c.04-.31.06-.62.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.61-.22l-2.39.96a7.05 7.05 0 0 0-1.63-.94l-.36-2.54a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.5.42l-.36 2.54c-.58.22-1.12.53-1.63.94l-2.39-.96a.5.5 0 0 0-.61.22L2.71 8.84a.5.5 0 0 0 .12.64l2.03 1.58c-.04.31-.06.62-.06.94s.02.63.06.94L2.83 14.52a.5.5 0 0 0-.12.64l1.92 3.32a.5.5 0 0 0 .61.22l2.39-.96c.5.41 1.05.72 1.63.94l.36 2.54a.5.5 0 0 0 .5.42h3.84a.5.5 0 0 0 .5-.42l.36-2.54c.58-.22 1.12-.53 1.63-.94l2.39.96a.5.5 0 0 0 .61-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58ZM12 15.2A3.2 3.2 0 1 1 12 8.8a3.2 3.2 0 0 1 0 6.4Z"/>
-   </svg>
+  <div class="timebar-row">
+   <span class="time-label" id="timeCurrent">0:00</span>
+   <div class="timebar" id="timebar" role="progressbar" aria-label="Track progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+    <div class="timebar-fill" id="timebarFill"></div>
+    <div class="timebar-head" id="timebarHead"></div>
+   </div>
+   <span class="time-label" id="timeDuration">0:00</span>
   </div>
  </div>
 
