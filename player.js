@@ -54,6 +54,7 @@ const cover = document.getElementById("cover");
 const eqGlow = document.getElementById("eqGlow");
 const vol = document.getElementById("vol");
 const tube = document.querySelector(".tube");
+const radioWrap = document.getElementById("radioWrap");
 const settingsPanel = document.getElementById("settingsPanel");
 const settingsButton = document.getElementById("settingsButton");
 const settingsTitle = document.getElementById("settingsTitle");
@@ -62,6 +63,7 @@ const shuffleToggleLabel = document.getElementById("shuffleToggleLabel");
 const playlistList = document.getElementById("playlistList");
 const versionedAsset = window.versionedAsset || ((path) => path);
 const logo = document.querySelector(".logo");
+const logoToggle = document.getElementById("logoToggle");
 
 const TUBE_PAD = 6;
 const BAR_MIN_WIDTH = 3;
@@ -342,6 +344,26 @@ function toggleSettingsPanel() {
 
 function closeSettingsPanel() {
   setSettingsOpen(false);
+}
+
+function setPlayerBarVisible(visible) {
+  if (!radioWrap) {
+    return;
+  }
+
+  radioWrap.classList.toggle("is-player-hidden", !visible);
+
+  if (logoToggle) {
+    logoToggle.setAttribute("aria-expanded", String(visible));
+  }
+
+  if (!visible && settingsOpen) {
+    closeSettingsPanel();
+  }
+}
+
+function togglePlayerBar() {
+  setPlayerBarVisible(radioWrap.classList.contains("is-player-hidden"));
 }
 
 function activeFillWidth(value) {
@@ -824,6 +846,7 @@ window.addEventListener("resize", () => syncEq(parseInt(vol.value, 10) || 0));
 window.toggleSettingsPanel = toggleSettingsPanel;
 window.closeSettingsPanel = closeSettingsPanel;
 window.toggleShuffleMode = toggleShuffleMode;
+window.togglePlayerBar = togglePlayerBar;
 window.playPause = playPause;
 window.nextTrack = nextTrack;
 window.prevTrack = prevTrack;
