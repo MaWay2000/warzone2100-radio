@@ -135,6 +135,7 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
+  width: 100%;
   min-width: 0;
 }
 
@@ -546,8 +547,9 @@ body {
 
 .tube {
   position: relative;
-  flex: 0 0 112px;
-  width: 112px;
+  flex: 1 1 112px;
+  min-width: 112px;
+  width: auto;
   height: 34px;
   border-radius: 17px;
   background: linear-gradient(180deg, rgba(26, 34, 44, 0.96) 0%, rgba(8, 12, 18, 0.99) 100%);
@@ -645,7 +647,8 @@ input[type="range"] {
 
   .tube {
     flex-basis: 104px;
-    width: 104px;
+    min-width: 104px;
+    width: auto;
   }
 
   .settings-panel {
