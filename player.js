@@ -43,6 +43,7 @@ let playing = false;
 let playerInitialized = false;
 let audioUnlocked = false;
 let settingsOpen = false;
+let startHintVisible = true;
 let disabledTrackIds = readStoredDisabledTrackIds();
 let currentTrackIndex = getRandomEnabledTrackIndex();
 let shuffleEnabled = readStoredShuffleState();
@@ -70,6 +71,7 @@ const timeDuration = document.getElementById("timeDuration");
 const versionedAsset = window.versionedAsset || ((path) => path);
 const logo = document.querySelector(".logo");
 const logoToggle = document.getElementById("logoToggle");
+const playPauseButton = document.getElementById("pp");
 
 const TUBE_PAD = 6;
 const BAR_MIN_WIDTH = 3;
@@ -740,6 +742,7 @@ function loadTrack(index, options = {}) {
   }
 
   playing = true;
+  startHintVisible = false;
   updateIcon();
   syncPlaylistSelection();
   updateTimebar();
@@ -840,7 +843,7 @@ function initYouTubePlayer() {
   player = new YT.Player("player", {
     videoId: TRACKS[Math.max(0, currentTrackIndex)].id,
     playerVars: {
-      autoplay: 1,
+      autoplay: 0,
       mute: 1,
       controls: 0,
       rel: 0,
@@ -849,12 +852,13 @@ function initYouTubePlayer() {
     events: {
       onReady: () => {
         setVol(vol.value);
-        loadTrack(currentTrackIndex);
+        cueTrack(currentTrackIndex);
         updateTimebar();
       },
       onStateChange: (event) => {
         if (event.data === YT.PlayerState.PLAYING) {
           playing = true;
+          startHintVisible = false;
           updateIcon();
           syncPlaylistSelection();
           updateTimebar();
@@ -886,9 +890,16 @@ if (window.YT && window.YT.Player) {
 }
 
 function updateIcon() {
-  document.getElementById("pp").innerHTML = playing
+  if (!playPauseButton) {
+    return;
+  }
+
+  playPauseButton.innerHTML = playing
     ? '<svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>'
     : '<svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg>';
+  playPauseButton.classList.toggle("needs-start", startHintVisible && !playing);
+  playPauseButton.title = startHintVisible && !playing ? "Press play to start audio" : "Play/Pause";
+  playPauseButton.setAttribute("aria-label", startHintVisible && !playing ? "Press play to start audio" : "Play or pause audio");
 }
 
 function unlockAudio() {
@@ -926,6 +937,7 @@ function playPause() {
     player.pauseVideo();
     playing = false;
   } else {
+    startHintVisible = false;
     player.playVideo();
     playing = true;
   }

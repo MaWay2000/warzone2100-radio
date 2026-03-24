@@ -5,7 +5,7 @@
 <title>Warzone Radio</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>
-window.ASSET_VERSION = "20260319-logorandomfade1";
+window.ASSET_VERSION = "20260324-playhint1";
 window.versionedAsset = function(path) {
   return path + "?v=" + window.ASSET_VERSION;
 };
@@ -31,7 +31,7 @@ document.head.appendChild(stylesheet);
     <svg viewBox="0 0 24 24"><polygon points="5,4 15,12 5,20"/><rect x="16" y="4" width="3" height="16"/></svg>
    </div>
 
-   <div class="btn" onclick="playPause()" id="pp" title="Play/Pause">
+   <div class="btn" onclick="playPause()" id="pp" title="Play/Pause" data-hint="Press play">
     <svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg>
    </div>
 
