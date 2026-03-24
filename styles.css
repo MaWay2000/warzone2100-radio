@@ -15,9 +15,10 @@ body {
 
 .wrap {
   position: fixed;
-  left: 16px;
-  top: 16px;
+  left: 50%;
+  top: 50%;
   right: auto;
+  transform: translate(-50%, -50%);
   z-index: 9999;
   min-width: 0;
 }

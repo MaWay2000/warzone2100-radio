@@ -400,15 +400,40 @@ function persistWrapPosition(left, top) {
   } catch (error) {}
 }
 
+function setWrapPosition(element, left, top) {
+  if (!element) {
+    return;
+  }
+
+  element.style.left = `${left}px`;
+  element.style.top = `${top}px`;
+  element.style.right = "auto";
+  element.style.transform = "none";
+}
+
+function getCenteredWrapPosition(element) {
+  const wrapRect = element.getBoundingClientRect();
+  const logoRect = logoToggle ? logoToggle.getBoundingClientRect() : wrapRect;
+  const boundsLeft = Math.min(wrapRect.left, logoRect.left);
+  const boundsTop = Math.min(wrapRect.top, logoRect.top);
+  const boundsRight = Math.max(wrapRect.right, logoRect.right);
+  const boundsBottom = Math.max(wrapRect.bottom, logoRect.bottom);
+  const boundsWidth = boundsRight - boundsLeft;
+  const boundsHeight = boundsBottom - boundsTop;
+
+  return {
+    left: Math.max(0, Math.round((window.innerWidth - boundsWidth) / 2 + (wrapRect.left - boundsLeft))),
+    top: Math.max(0, Math.round((window.innerHeight - boundsHeight) / 2 + (wrapRect.top - boundsTop)))
+  };
+}
+
 function pinWrapToCurrentPosition() {
   if (!radioWrap) {
     return null;
   }
 
   const rect = radioWrap.getBoundingClientRect();
-  radioWrap.style.left = `${rect.left}px`;
-  radioWrap.style.top = `${rect.top}px`;
-  radioWrap.style.right = "auto";
+  setWrapPosition(radioWrap, rect.left, rect.top);
   return rect;
 }
 
@@ -433,9 +458,7 @@ function keepLogoFixedAfterLayoutChange() {
     const adjustedLeft = clampNumber(currentLeft + (logoRectBefore.left - logoRectAfter.left), 0, maxLeft);
     const adjustedTop = clampNumber(currentTop + (logoRectBefore.top - logoRectAfter.top), 0, maxTop);
 
-    radioWrap.style.left = `${adjustedLeft}px`;
-    radioWrap.style.top = `${adjustedTop}px`;
-    radioWrap.style.right = "auto";
+    setWrapPosition(radioWrap, adjustedLeft, adjustedTop);
     persistWrapPosition(adjustedLeft, adjustedTop);
   };
 }
@@ -1027,22 +1050,14 @@ document.addEventListener("keydown", unlockAudio);
     } catch (error) {}
   }
 
-  try {
-    const saved = JSON.parse(localStorage.getItem(POSITION_STORAGE_KEY) || "null");
-    if (saved && typeof saved.left === "number" && typeof saved.top === "number") {
-      wrap.style.left = `${saved.left}px`;
-      wrap.style.top = `${saved.top}px`;
-      wrap.style.right = "auto";
-    } else {
-      wrap.style.left = "16px";
-      wrap.style.top = "16px";
-      wrap.style.right = "auto";
-    }
-  } catch (error) {
-    wrap.style.left = "16px";
-    wrap.style.top = "16px";
-    wrap.style.right = "auto";
+  function centerWrap() {
+    const centeredPosition = getCenteredWrapPosition(wrap);
+    setWrapPosition(wrap, centeredPosition.left, centeredPosition.top);
   }
+
+  window.requestAnimationFrame(() => {
+    centerWrap();
+  });
 
   function onPointerDown(event) {
     if (event.button !== 0) {
@@ -1085,9 +1100,7 @@ document.addEventListener("keydown", unlockAudio);
 
       dragging = true;
       suppressLogoClick = dragStartedOnLogo;
-      wrap.style.right = "auto";
-      wrap.style.left = `${startLeft}px`;
-      wrap.style.top = `${startTop}px`;
+      setWrapPosition(wrap, startLeft, startTop);
     }
 
     const maxLeft = window.innerWidth - wrap.offsetWidth;
@@ -1095,8 +1108,7 @@ document.addEventListener("keydown", unlockAudio);
     const newLeft = clampNumber(startLeft + dx, 0, Math.max(0, maxLeft));
     const newTop = clampNumber(startTop + dy, 0, Math.max(0, maxTop));
 
-    wrap.style.left = `${newLeft}px`;
-    wrap.style.top = `${newTop}px`;
+    setWrapPosition(wrap, newLeft, newTop);
   }
 
   function onPointerUp() {
@@ -1147,9 +1159,7 @@ document.addEventListener("keydown", unlockAudio);
     const maxTop = Math.max(0, window.innerHeight - wrap.offsetHeight);
     const left = clampNumber(rect.left, 0, maxLeft);
     const top = clampNumber(rect.top, 0, maxTop);
-    wrap.style.left = `${left}px`;
-    wrap.style.top = `${top}px`;
-    wrap.style.right = "auto";
+    setWrapPosition(wrap, left, top);
     savePosition(left, top);
   });
 }());
