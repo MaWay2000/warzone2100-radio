@@ -5,10 +5,91 @@
 <title>Warzone Radio</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>
-window.ASSET_VERSION = "20260325-radioonly1";
+window.ASSET_VERSION = "20260325-permissions1";
 window.versionedAsset = function(path) {
   return path + "?v=" + window.ASSET_VERSION;
 };
+
+(function sanitizeIframePermissionsPolicy() {
+  const iframeProto = window.HTMLIFrameElement && window.HTMLIFrameElement.prototype;
+  if (!iframeProto) {
+    return;
+  }
+
+  function getSupportedFeatures() {
+    const sources = [document.permissionsPolicy, document.featurePolicy];
+
+    for (const source of sources) {
+      if (source && typeof source.features === "function") {
+        try {
+          const features = source.features();
+          if (Array.isArray(features) && features.length) {
+            return new Set(features.map((feature) => String(feature).toLowerCase()));
+          }
+        } catch (error) {}
+      }
+
+      if (source && typeof source.allowedFeatures === "function") {
+        try {
+          const features = source.allowedFeatures();
+          if (Array.isArray(features) && features.length) {
+            return new Set(features.map((feature) => String(feature).toLowerCase()));
+          }
+        } catch (error) {}
+      }
+    }
+
+    return null;
+  }
+
+  const supportedFeatures = getSupportedFeatures();
+  if (!supportedFeatures || !supportedFeatures.size) {
+    return;
+  }
+
+  function sanitizeAllowValue(value) {
+    if (typeof value !== "string") {
+      return "";
+    }
+
+    return value
+      .split(";")
+      .map((entry) => entry.trim())
+      .filter(Boolean)
+      .filter((entry) => {
+        const featureName = entry.split(/\s+/)[0].toLowerCase();
+        return supportedFeatures.has(featureName);
+      })
+      .join("; ");
+  }
+
+  const allowDescriptor = Object.getOwnPropertyDescriptor(iframeProto, "allow");
+  if (allowDescriptor && typeof allowDescriptor.set === "function") {
+    Object.defineProperty(iframeProto, "allow", {
+      configurable: true,
+      enumerable: allowDescriptor.enumerable,
+      get: allowDescriptor.get
+        ? function getAllow() {
+            return allowDescriptor.get.call(this);
+          }
+        : function getAllowFallback() {
+            return this.getAttribute("allow") || "";
+          },
+      set: function setAllow(value) {
+        return allowDescriptor.set.call(this, sanitizeAllowValue(value));
+      }
+    });
+  }
+
+  const originalSetAttribute = Element.prototype.setAttribute;
+  Element.prototype.setAttribute = function patchedSetAttribute(name, value) {
+    if (this instanceof HTMLIFrameElement && typeof name === "string" && name.toLowerCase() === "allow") {
+      return originalSetAttribute.call(this, name, sanitizeAllowValue(value));
+    }
+
+    return originalSetAttribute.call(this, name, value);
+  };
+}());
 
 const favicon = document.createElement("link");
 favicon.rel = "icon";
