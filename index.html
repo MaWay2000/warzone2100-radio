@@ -5,10 +5,16 @@
 <title>Warzone Radio</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>
-window.ASSET_VERSION = "20260324-centerplayer1";
+window.ASSET_VERSION = "20260325-favicon1";
 window.versionedAsset = function(path) {
   return path + "?v=" + window.ASSET_VERSION;
 };
+
+const favicon = document.createElement("link");
+favicon.rel = "icon";
+favicon.type = "image/webp";
+favicon.href = window.versionedAsset("assets/warzone-radio-logo.webp");
+document.head.appendChild(favicon);
 
 const stylesheet = document.createElement("link");
 stylesheet.rel = "stylesheet";
