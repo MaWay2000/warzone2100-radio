@@ -4,15 +4,6 @@ body {
   font-family: Arial, sans-serif;
 }
 
-#playerWrap {
-  position: absolute;
-  left: -9999px;
-  top: -9999px;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-}
-
 .wrap {
   position: fixed;
   left: 50%;

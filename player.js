@@ -5,38 +5,39 @@ const SHUFFLE_STORAGE_KEY = "warzone_radio_shuffle_v1";
 const DISABLED_TRACKS_STORAGE_KEY = "warzone_radio_disabled_tracks_v2";
 const LEGACY_DISABLED_TRACKS_STORAGE_KEY = "warzone_radio_disabled_tracks_v1";
 const TRACKS = [
-  { id: "Py5lzGVtjAo", title: "Warzone 2100 OST -  Main Menu", length: "3:01" },
-  { id: "bv9GzLEOZk4", title: "Warzone 2100 OST - Martin Severn - Nuclear Silence", length: "7:01" },
-  { id: "HsgyEmLrNKE", title: "Warzone 2100 OST - Martin Severn - Radar Dish", length: "7:52" },
-  { id: "d5kdmyseI9Q", title: "Warzone 2100 OST - Martin Severn - Enfeebling Emptiness", length: "5:00" },
-  { id: "IA00X8OrmII", title: "Warzone 2100 OST - AlexTheDacian - Uncertain Future", length: "10:59" },
-  { id: "kRyOXti5JrI", title: "Warzone 2100 OST - AlexTheDacian - Recovery Ops", length: "6:59" },
-  { id: "dimG8S09UV8", title: "Warzone 2100 OST - AlexTheDacian - Incoming Transmission", length: "5:13" },
-  { id: "ntjg7_rSUFI", title: "Warzone 2100 OST - AlexTheDacian - My Kind of Wasteland", length: "7:49" },
-  { id: "fapSb205e48", title: "Warzone 2100 OST - AlexTheDacian - Advanced Manufacturing", length: "6:37" },
-  { id: "VVFjtC1v_kI", title: "Warzone 2100 OST - AlexTheDacian - The Project", length: "8:13" },
-  { id: "3JID8x2G0_o", title: "Warzone 2100 OST - AlexTheDacian - The Collective", length: "12:37" },
-  { id: "wyufwpMkzRY", title: "Warzone 2100 OST - AlexTheDacian - Awakend", length: "6:16" },
-  { id: "RR5OTGYxCk8", title: "Warzone 2100 OST - AlexTheDacian - New Dawn", length: "6:32" },
-  { id: "3QutPACeqRg", title: "Warzone 2100 OST - AlexTheDacian - Broken Dreams", length: "7:06" },
-  { id: "yrKdamkYKvk", title: "Warzone 2100 OST - AlexTheDacian - Artifact Beacon", length: "6:06" },
-  { id: "PJ2wav5ERJQ", title: "Warzone 2100 OST  - AlexTheDacian - Unexpected Outcome", length: "6:13" },
-  { id: "USmw4wgv9as", title: "Warzone 2100 OST - AlexTheDacian - Geiger Ghost Extended v2", length: "8:08" },
-  { id: "MEpytWvLP5Q", title: "Warzone 2100 - Aftermath Soundtrack - Menu Theme [Enhanced]", length: "10:49" },
-  { id: "sK0C42Q_MAk", title: "Warzone 2100 - Aftermath Soundtrack - Track 17 - Nuclear Heartbeat", length: "7:58" },
-  { id: "OeKNXc55Iow", title: "Warzone 2100 - Aftermath Soundtrack - Track 18 - Moonlight Tactics", length: "10:22" },
-  { id: "Q9xRuvG-XC4", title: "Warzone 2100 - Aftermath Soundtrack - Track 19 - Undisclosed Location", length: "6:02" },
-  { id: "VG4K1b2FJrE", title: "Warzone 2100 - Aftermath Soundtrack - Track 20 - Shifting Realities", length: "9:46" },
-  { id: "g76gc2GBeME", title: "Warzone 2100 - Aftermath Soundtrack - Track 21 - The Collapse", length: "10:55" },
-  { id: "SF1Cdxw91Vw", title: "Warzone 2100 - Aftermath Soundtrack - Track 22 - Aftershocks", length: "9:49" },
-  { id: "eK9QHcoDjHM", title: "Warzone 2100 - Aftermath Soundtrack - Track 23 - Blast Zone", length: "11:21" },
-  { id: "d6jpvv8TE0U", title: "Warzone 2100 - Aftermath Soundtrack - Track 24 - Reclamation", length: "8:48" },
-  { id: "OYIx649A_bY", title: "Warzone 2100 - Aftermath Soundtrack - Track 25 - Rainout", length: "9:55" },
-  { id: "nb9kl8kVahE", title: "Warzone 2100 - Aftermath Soundtrack - Track 26 - Just Rewards", length: "14:08" },
-  { id: "1JUDSwBRXOU", title: "Warzone 2100 - Aftermath Soundtrack - Track 27 - Launch Codes", length: "6:59" }
+  { id: "bv9GzLEOZk4", src: "tracks/01-nuclear-silence.mp3", title: "Nuclear Silence", length: "7:00" },
+  { id: "HsgyEmLrNKE", src: "tracks/02-radar-dish.mp3", title: "Radar Dish", length: "7:51" },
+  { id: "d5kdmyseI9Q", src: "tracks/03-enfeebling-emptiness.mp3", title: "Enfeebling Emptiness", length: "4:59" },
+  { id: "IA00X8OrmII", src: "tracks/04-uncertain-future.mp3", title: "Uncertain Future", length: "10:58" },
+  { id: "kRyOXti5JrI", src: "tracks/05-recovery-ops.mp3", title: "Recovery Ops", length: "6:58" },
+  { id: "dimG8S09UV8", src: "tracks/06-incoming-transmission.mp3", title: "Incoming Transmission", length: "5:12" },
+  { id: "ntjg7_rSUFI", src: "tracks/07-my-kind-of-wasteland.mp3", title: "My Kind of Wasteland", length: "7:48" },
+  { id: "fapSb205e48", src: "tracks/08-advanced-manufacturing.mp3", title: "Advanced Manufacturing", length: "6:36" },
+  { id: "VVFjtC1v_kI", src: "tracks/09-the-project.mp3", title: "The Project", length: "8:12" },
+  { id: "3JID8x2G0_o", src: "tracks/10-the-collective.mp3", title: "The Collective", length: "12:36" },
+  { id: "wyufwpMkzRY", src: "tracks/11-awakened.mp3", title: "Awakened", length: "6:15" },
+  { id: "RR5OTGYxCk8", src: "tracks/12-new-dawn.mp3", title: "New Dawn", length: "6:31" },
+  { id: "3QutPACeqRg", src: "tracks/13-broken-dreams.mp3", title: "Broken Dreams", length: "7:05" },
+  { id: "yrKdamkYKvk", src: "tracks/14-artifact-beacon.mp3", title: "Artifact Beacon", length: "6:05" },
+  { id: "PJ2wav5ERJQ", src: "tracks/15-unexpected-outcome.mp3", title: "Unexpected Outcome", length: "6:12" },
+  { id: "USmw4wgv9as", src: "tracks/16-geiger-ghosts.mp3", title: "Geiger Ghosts", length: "8:07" },
+  { id: "MEpytWvLP5Q", src: "tracks/17-menu-theme-enhanced.mp3", title: "Menu Theme [Enhanced]", length: "10:48" },
+  { id: "aftermath-track-03-enhanced", src: "tracks/18-track-03-enhanced.mp3", title: "Track 03 [Enhanced]", length: "4:59" },
+  { id: "sK0C42Q_MAk", src: "tracks/19-nuclear-heartbeat.mp3", title: "Nuclear Heartbeat", length: "7:57" },
+  { id: "OeKNXc55Iow", src: "tracks/20-moonlight-tactics.mp3", title: "Moonlight Tactics", length: "10:21" },
+  { id: "Q9xRuvG-XC4", src: "tracks/21-undisclosed-location.mp3", title: "Undisclosed Location", length: "6:01" },
+  { id: "VG4K1b2FJrE", src: "tracks/22-shifting-realities.mp3", title: "Shifting Realities", length: "9:45" },
+  { id: "g76gc2GBeME", src: "tracks/23-the-collapse.mp3", title: "The Collapse", length: "10:54" },
+  { id: "SF1Cdxw91Vw", src: "tracks/24-aftershocks.mp3", title: "Aftershocks", length: "9:48" },
+  { id: "eK9QHcoDjHM", src: "tracks/25-blast-zone.mp3", title: "Blast Zone", length: "11:20" },
+  { id: "d6jpvv8TE0U", src: "tracks/26-reclamation.mp3", title: "Reclamation", length: "8:47" },
+  { id: "OYIx649A_bY", src: "tracks/27-rainout.mp3", title: "Rainout", length: "9:54" },
+  { id: "nb9kl8kVahE", src: "tracks/28-just-rewards.mp3", title: "Just Rewards", length: "14:07" },
+  { id: "1JUDSwBRXOU", src: "tracks/29-launch-codes.mp3", title: "Launch Codes", length: "6:58" }
 ];
 const KNOWN_TRACK_IDS = new Set(TRACKS.map((track) => track.id));
-const DEFAULT_DISABLED_TRACK_IDS = new Set([TRACKS[0].id]);
+const TRACKS_BY_ID = new Map(TRACKS.map((track) => [track.id, track]));
+const DEFAULT_DISABLED_TRACK_IDS = new Set();
 
 let player;
 let playing = false;
@@ -49,7 +50,6 @@ let currentTrackIndex = getRandomEnabledTrackIndex();
 let shuffleEnabled = readStoredShuffleState();
 let shuffleOrder = [];
 let shufflePosition = 0;
-let logoPulseTimeoutId = 0;
 
 const eq = document.getElementById("eq");
 const cover = document.getElementById("cover");
@@ -72,11 +72,22 @@ const versionedAsset = window.versionedAsset || ((path) => path);
 const logo = document.querySelector(".logo");
 const logoToggle = document.getElementById("logoToggle");
 const playPauseButton = document.getElementById("pp");
+const audioElement = new Audio();
 
 const TUBE_PAD = 6;
 const BAR_MIN_WIDTH = 3;
 const BAR_GAP = 3;
 const BAR_PATTERN = [34, 42, 38, 52, 46, 64, 76, 66, 54, 46, 40, 38];
+
+let audioContext;
+let audioSourceNode;
+let analyserNode;
+let analyserData;
+let currentAudioTrackId = "";
+
+audioElement.preload = "metadata";
+audioElement.loop = false;
+audioElement.playsInline = true;
 
 if (logo && logo.dataset.assetPath) {
   logo.src = versionedAsset(logo.dataset.assetPath);
@@ -263,6 +274,178 @@ function formatTrackTitle(title) {
   return stripped;
 }
 
+function getTrackById(trackId) {
+  return TRACKS_BY_ID.get(trackId) || null;
+}
+
+function resolveTrackSource(track) {
+  return track ? versionedAsset(track.src) : "";
+}
+
+function ensureAudioGraph() {
+  if (audioContext || !(window.AudioContext || window.webkitAudioContext)) {
+    return;
+  }
+
+  const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
+  audioContext = new AudioContextCtor();
+  audioSourceNode = audioContext.createMediaElementSource(audioElement);
+  analyserNode = audioContext.createAnalyser();
+  analyserNode.fftSize = 256;
+  analyserNode.smoothingTimeConstant = 0.82;
+  analyserData = new Uint8Array(analyserNode.frequencyBinCount);
+  audioSourceNode.connect(analyserNode);
+  analyserNode.connect(audioContext.destination);
+}
+
+function syncAudioContextState() {
+  ensureAudioGraph();
+
+  if (audioContext && audioContext.state === "suspended") {
+    audioContext.resume().catch(() => {});
+  }
+}
+
+function setCurrentAudioTrack(track) {
+  if (!track) {
+    return false;
+  }
+
+  if (currentAudioTrackId === track.id && audioElement.src) {
+    return false;
+  }
+
+  currentAudioTrackId = track.id;
+  audioElement.src = resolveTrackSource(track);
+  audioElement.load();
+  return true;
+}
+
+function playAudioElement() {
+  const playPromise = audioElement.play();
+
+  if (playPromise && typeof playPromise.catch === "function") {
+    playPromise.catch(() => {
+      playing = false;
+      updateIcon();
+      updateTimebar();
+    });
+  }
+}
+
+function prepareTrackById(trackId, autoplay) {
+  const track = getTrackById(trackId);
+  if (!track) {
+    return false;
+  }
+
+  setCurrentAudioTrack(track);
+
+  try {
+    audioElement.currentTime = 0;
+  } catch (error) {}
+
+  if (autoplay) {
+    syncAudioContextState();
+    playAudioElement();
+  } else {
+    audioElement.pause();
+    updateTimebar();
+  }
+
+  return true;
+}
+
+function createLocalPlayerAdapter() {
+  return {
+    setVolume(nextValue) {
+      audioElement.volume = clampNumber(Number(nextValue) || 0, 0, 100) / 100;
+    },
+    getCurrentTime() {
+      return Number.isFinite(audioElement.currentTime) ? audioElement.currentTime : 0;
+    },
+    getDuration() {
+      return Number.isFinite(audioElement.duration) ? audioElement.duration : 0;
+    },
+    seekTo(seconds) {
+      const maxDuration = Number.isFinite(audioElement.duration) && audioElement.duration > 0
+        ? audioElement.duration
+        : Math.max(0, seconds);
+
+      try {
+        audioElement.currentTime = clampNumber(seconds, 0, maxDuration);
+      } catch (error) {}
+    },
+    pauseVideo() {
+      audioElement.pause();
+    },
+    playVideo() {
+      syncAudioContextState();
+      playAudioElement();
+    },
+    cueVideoById(trackId) {
+      return prepareTrackById(trackId, false);
+    },
+    loadVideoById(trackId) {
+      return prepareTrackById(trackId, true);
+    },
+    unMute() {
+      audioElement.muted = false;
+    }
+  };
+}
+
+function initLocalAudioPlayer() {
+  if (playerInitialized) {
+    return;
+  }
+
+  playerInitialized = true;
+  player = createLocalPlayerAdapter();
+
+  audioElement.addEventListener("play", () => {
+    playing = true;
+    startHintVisible = false;
+    updateIcon();
+    syncPlaylistSelection();
+    updateTimebar();
+  });
+
+  audioElement.addEventListener("pause", () => {
+    if (audioElement.ended) {
+      return;
+    }
+
+    playing = false;
+    updateIcon();
+    syncPlaylistSelection();
+    updateTimebar();
+  });
+
+  audioElement.addEventListener("ended", () => {
+    playing = false;
+    updateIcon();
+    syncPlaylistSelection();
+    updateTimebar();
+    nextTrack();
+  });
+
+  audioElement.addEventListener("loadedmetadata", updateTimebar);
+  audioElement.addEventListener("durationchange", updateTimebar);
+  audioElement.addEventListener("timeupdate", updateTimebar);
+  audioElement.addEventListener("seeking", updateTimebar);
+  audioElement.addEventListener("seeked", updateTimebar);
+  audioElement.addEventListener("error", () => {
+    playing = false;
+    updateIcon();
+    updateTimebar();
+  });
+
+  setVol(vol.value);
+  cueTrack(currentTrackIndex);
+  updateTimebar();
+}
+
 function updateShuffleUi() {
   if (!shuffleToggle || !shuffleToggleLabel) {
     return;
@@ -283,7 +466,7 @@ function syncShufflePosition(trackIndex) {
     return;
   }
 
-  if (shuffleOrder.length !== TRACKS.length) {
+  if (shuffleOrder.length !== getEnabledTrackIndexes().length) {
     resetShuffleOrder(trackIndex);
     return;
   }
@@ -609,14 +792,41 @@ function updateTimebar() {
 
 function animateBars() {
   const bars = document.querySelectorAll(".bar");
+  let logoLevel = 0;
 
-  bars.forEach((bar, index) => {
-    const base = BAR_PATTERN[index % BAR_PATTERN.length];
-    const motion = playing ? ((Math.sin(Date.now() / 180 + index * 0.75) + 1) * 7 + Math.random() * 4) : 0;
+  if (playing && analyserNode && analyserData && bars.length) {
+    analyserNode.getByteFrequencyData(analyserData);
+    const binsPerBar = analyserData.length / bars.length;
+    let totalLevel = 0;
 
-    bar.style.height = `${Math.min(96, Math.max(22, base + motion))}%`;
-    bar.style.opacity = playing ? "1" : "0.45";
-  });
+    bars.forEach((bar, index) => {
+      const start = Math.floor(index * binsPerBar);
+      const end = Math.max(start + 1, Math.floor((index + 1) * binsPerBar));
+      let sliceTotal = 0;
+
+      for (let sampleIndex = start; sampleIndex < end; sampleIndex += 1) {
+        sliceTotal += analyserData[sampleIndex] || 0;
+      }
+
+      const normalized = sliceTotal / ((end - start) * 255);
+      const height = 18 + normalized * 78;
+      const opacity = 0.42 + normalized * 0.58;
+
+      totalLevel += normalized;
+      bar.style.height = `${height.toFixed(2)}%`;
+      bar.style.opacity = opacity.toFixed(2);
+    });
+
+    logoLevel = clampNumber((totalLevel / bars.length) * 180, 0, 100);
+  } else {
+    bars.forEach((bar, index) => {
+      const base = BAR_PATTERN[index % BAR_PATTERN.length] * 0.55;
+      bar.style.height = `${Math.max(18, base).toFixed(2)}%`;
+      bar.style.opacity = "0.42";
+    });
+  }
+
+  updateLogoSkyIntensity(logoLevel, 120);
 
   updateTimebar();
 }
@@ -633,45 +843,6 @@ function updateLogoSkyIntensity(nextValue, transitionMs = 0) {
   logoToggle.style.setProperty("--logo-sky-transition", `${Math.max(0, Math.round(transitionMs))}ms`);
   logoToggle.style.setProperty("--logo-sky-opacity", opacity.toFixed(3));
   logoToggle.style.setProperty("--logo-sky-brightness", brightness.toFixed(3));
-}
-
-function getRandomLogoPulseDuration() {
-  return (Math.floor(Math.random() * 10) + 1) * 200;
-}
-
-function getRandomLogoPulsePercent() {
-  if (Math.random() < 0.75) {
-    return Math.floor(Math.random() * 101);
-  }
-
-  return 100;
-}
-
-function startRandomLogoPulseLoop() {
-  if (!logoToggle) {
-    return;
-  }
-
-  if (logoPulseTimeoutId) {
-    window.clearTimeout(logoPulseTimeoutId);
-    logoPulseTimeoutId = 0;
-  }
-
-  updateLogoSkyIntensity(0, 0);
-
-  function scheduleNextPulse() {
-    const peakPercent = getRandomLogoPulsePercent();
-    const fadeInDuration = getRandomLogoPulseDuration();
-    const fadeOutDuration = getRandomLogoPulseDuration();
-
-    updateLogoSkyIntensity(peakPercent, fadeInDuration);
-    logoPulseTimeoutId = window.setTimeout(() => {
-      updateLogoSkyIntensity(0, fadeOutDuration);
-      logoPulseTimeoutId = window.setTimeout(scheduleNextPulse, fadeOutDuration);
-    }, fadeInDuration);
-  }
-
-  scheduleNextPulse();
 }
 
 function refreshVolumeVisuals() {
@@ -694,9 +865,7 @@ function setVol(nextValue) {
 
 function stopPlayback() {
   if (hasPlayerMethod("pauseVideo")) {
-    try {
-      player.pauseVideo();
-    } catch (error) {}
+    player.pauseVideo();
   }
 
   playing = false;
@@ -759,11 +928,10 @@ function loadTrack(index, options = {}) {
   player.loadVideoById(TRACKS[trackIndex].id);
 
   if (audioUnlocked && hasPlayerMethod("unMute")) {
-    try {
-      player.unMute();
-    } catch (error) {}
+    player.unMute();
   }
 
+  syncAudioContextState();
   playing = true;
   startHintVisible = false;
   updateIcon();
@@ -857,61 +1025,6 @@ function toggleShuffleMode() {
   updateShuffleUi();
 }
 
-function initYouTubePlayer() {
-  if (playerInitialized || !window.YT || !window.YT.Player) {
-    return;
-  }
-
-  playerInitialized = true;
-  player = new YT.Player("player", {
-    videoId: TRACKS[Math.max(0, currentTrackIndex)].id,
-    playerVars: {
-      autoplay: 0,
-      mute: 1,
-      controls: 0,
-      rel: 0,
-      playsinline: 1
-    },
-    events: {
-      onReady: () => {
-        setVol(vol.value);
-        cueTrack(currentTrackIndex);
-        updateTimebar();
-      },
-      onStateChange: (event) => {
-        if (event.data === YT.PlayerState.PLAYING) {
-          playing = true;
-          startHintVisible = false;
-          updateIcon();
-          syncPlaylistSelection();
-          updateTimebar();
-        }
-
-        if (event.data === YT.PlayerState.PAUSED) {
-          playing = false;
-          updateIcon();
-          syncPlaylistSelection();
-          updateTimebar();
-        }
-
-        if (event.data === YT.PlayerState.ENDED) {
-          playing = false;
-          updateIcon();
-          syncPlaylistSelection();
-          updateTimebar();
-          nextTrack();
-        }
-      }
-    }
-  });
-}
-
-window.onYouTubeIframeAPIReady = initYouTubePlayer;
-
-if (window.YT && window.YT.Player) {
-  initYouTubePlayer();
-}
-
 function updateIcon() {
   if (!playPauseButton) {
     return;
@@ -934,10 +1047,10 @@ function unlockAudio() {
   document.removeEventListener("pointerdown", unlockAudio);
   document.removeEventListener("keydown", unlockAudio);
 
+  syncAudioContextState();
+
   if (hasPlayerMethod("unMute")) {
-    try {
-      player.unMute();
-    } catch (error) {}
+    player.unMute();
   }
 }
 
@@ -1243,10 +1356,11 @@ document.addEventListener("keydown", unlockAudio);
 
 renderPlaylist();
 vol.value = String(readStoredVolume());
+initLocalAudioPlayer();
 setVol(vol.value);
 animateBars();
 updateTimebar();
-startRandomLogoPulseLoop();
+updateLogoSkyIntensity(0, 0);
 setInterval(animateBars, 120);
 window.addEventListener("resize", () => syncEq(parseInt(vol.value, 10) || 0));
 window.toggleSettingsPanel = toggleSettingsPanel;
