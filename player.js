@@ -4,6 +4,7 @@ const VOLUME_STORAGE_KEY = "warzone_radio_volume_v1";
 const SHUFFLE_STORAGE_KEY = "warzone_radio_shuffle_v1";
 const DISABLED_TRACKS_STORAGE_KEY = "warzone_radio_disabled_tracks_v2";
 const LEGACY_DISABLED_TRACKS_STORAGE_KEY = "warzone_radio_disabled_tracks_v1";
+const IS_EMBEDDED_MODE = window.self !== window.top;
 const TRACKS = [
   { id: "bv9GzLEOZk4", src: "tracks/01-nuclear-silence.mp3", title: "Nuclear Silence", length: "7:00" },
   { id: "HsgyEmLrNKE", src: "tracks/02-radar-dish.mp3", title: "Radar Dish", length: "7:51" },
@@ -91,6 +92,14 @@ audioElement.playsInline = true;
 
 if (logo && logo.dataset.assetPath) {
   logo.src = versionedAsset(logo.dataset.assetPath);
+}
+
+if (document.body) {
+  document.body.classList.toggle("is-embedded", IS_EMBEDDED_MODE);
+}
+
+if (radioWrap) {
+  radioWrap.classList.toggle("is-embedded", IS_EMBEDDED_MODE);
 }
 
 function clampNumber(value, min, max) {
@@ -578,9 +587,24 @@ function closeSettingsPanel() {
 }
 
 function persistWrapPosition(left, top) {
+  if (IS_EMBEDDED_MODE) {
+    return;
+  }
+
   try {
     localStorage.setItem(POSITION_STORAGE_KEY, JSON.stringify({ left, top }));
   } catch (error) {}
+}
+
+function clearWrapPosition(element) {
+  if (!element) {
+    return;
+  }
+
+  element.style.left = "";
+  element.style.top = "";
+  element.style.right = "";
+  element.style.transform = "";
 }
 
 function setWrapPosition(element, left, top) {
@@ -611,7 +635,7 @@ function getCenteredWrapPosition(element) {
 }
 
 function pinWrapToCurrentPosition() {
-  if (!radioWrap) {
+  if (!radioWrap || IS_EMBEDDED_MODE) {
     return null;
   }
 
@@ -621,7 +645,7 @@ function pinWrapToCurrentPosition() {
 }
 
 function keepLogoFixedAfterLayoutChange() {
-  if (!radioWrap || !logoToggle) {
+  if (IS_EMBEDDED_MODE || !radioWrap || !logoToggle) {
     return;
   }
 
@@ -1143,6 +1167,15 @@ document.addEventListener("keydown", unlockAudio);
 
 (function initDragPosition() {
   const wrap = document.getElementById("radioWrap");
+  if (!wrap) {
+    return;
+  }
+
+  if (IS_EMBEDDED_MODE) {
+    clearWrapPosition(wrap);
+    return;
+  }
+
   const DRAG_THRESHOLD = 5;
   let pointerActive = false;
   let dragging = false;
